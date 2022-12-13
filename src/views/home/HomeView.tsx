@@ -1,17 +1,26 @@
-import React from 'react';
 import { useAppDispatch } from '../../store/store';
-import { hello } from '../../store/user/userSlice';
+import { hello, helloAdmin } from '../../store/user/userSlice';
 
 const HomeView = () => {
 
     const dispatch = useAppDispatch();
 
-    const sendHello = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const sendHello = () => {
         
         dispatch(hello());
     };
 
-    return <button onClick={sendHello}>Hello</button>
+    const sendHelloAdmin = () => {
+        
+        dispatch(helloAdmin());
+    };
+
+    return (
+        <>
+            <button onClick={sendHello}>Hello</button>
+            <button onClick={sendHelloAdmin}>Hello admin</button>
+        </>
+    );
 }
 
 export default HomeView;

@@ -1,11 +1,12 @@
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { createCommonAsyncAction } from '../utils/actionUtils';
+import { decodeToken } from '../../utils/jwtUtils';
 import { TOKENS_LIFETIME } from '../../properties/Properties';
 import LocalStorageItem from '../../properties/LocalStorageItem';
 import Message from '../../properties/Messages';
 import { SliceName } from '../../types/store';
-import { helloApi, loginApi, signUpApi } from './userApi';
-import { UserAsyncActionType, UserCredentialsDto, UserTokensDto } from './types';
+import { helloAdminApi, helloApi, loginApi, signUpApi } from './userApi';
+import { UserAsyncActionType, UserCredentialsDto, UserState, UserTokensDto } from './types';
 
 export const login = createCommonAsyncAction<UserCredentialsDto, UserTokensDto>(
     UserAsyncActionType.LOGIN,
@@ -30,40 +31,44 @@ export const hello = createCommonAsyncAction<undefined, string>(
     () => helloApi()
 );
 
+export const helloAdmin = createCommonAsyncAction<undefined, string>(
+    'helloAdmin',
+    () => helloAdminApi(),
+);
+
 const userSlice = createSlice({
     name: SliceName.USER,
-    initialState: {
-        authenticated: false
-    },
+    initialState: { authenticated: false } as UserState,
     reducers: {
-        loginFromTokens: (state) => {
-            state.authenticated = true;
+        loginFromStorage: () => {
+            var userInfo = decodeToken(localStorage.getItem(LocalStorageItem.ACCESS_TOKEN)!!);
+            return { authenticated: true, ...userInfo };
         },
-        logOut: (state) => {
-            state.authenticated = false;
-        },
+        logOut: () => ({ authenticated: false }),
     },
     extraReducers: (builder) => {
         builder
-            .addCase(login.fulfilled, (state, action) => {
-                localStorage.setItem(LocalStorageItem.ACCESS_TOKEN, action.payload.accessToken);
-                localStorage.setItem(LocalStorageItem.REFRESH_TOKEN, action.payload.refreshToken);
+            .addCase(login.fulfilled, (__, action) => {
+                const { accessToken, refreshToken } = action.payload;
+                localStorage.setItem(LocalStorageItem.ACCESS_TOKEN, accessToken);
+                localStorage.setItem(LocalStorageItem.REFRESH_TOKEN, refreshToken);
                 localStorage.setItem(LocalStorageItem.TOKENS_EXPIRE_AT, (Date.now() + TOKENS_LIFETIME).toString());
 
-                state.authenticated = true;
+                const userInfo = decodeToken(accessToken);
+                return { authenticated: true, ...userInfo };
             })
-            .addCase(loginAndRemember.fulfilled, (state, action) => {
-                localStorage.setItem(LocalStorageItem.ACCESS_TOKEN, action.payload.accessToken);
-                localStorage.setItem(LocalStorageItem.REFRESH_TOKEN, action.payload.refreshToken);
+            .addCase(loginAndRemember.fulfilled, (__, action) => {
+                const { accessToken, refreshToken } = action.payload;
+                localStorage.setItem(LocalStorageItem.ACCESS_TOKEN, accessToken);
+                localStorage.setItem(LocalStorageItem.REFRESH_TOKEN, refreshToken);
 
-                state.authenticated = true;
+                const userInfo = decodeToken(accessToken);
+                return { authenticated: true, ...userInfo };
             })
-            .addMatcher(isAnyOf(login.rejected, loginAndRemember.rejected), (state) => {
-                state.authenticated = false;
-            });
+            .addMatcher(isAnyOf(login.rejected, loginAndRemember.rejected), () => ({ authenticated: false }));
     },
 });
 
-export const { loginFromTokens, logOut } = userSlice.actions;
+export const { loginFromStorage, logOut } = userSlice.actions;
 
 export default userSlice;

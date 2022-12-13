@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers';
 import { checkTokensExpiration } from '../utils/authUtils';
-import { loginFromTokens } from './user/userSlice';
+import { loginFromStorage } from './user/userSlice';
 import { Events } from '../types/common';
 
 const initializeStore = () => {
@@ -21,7 +21,7 @@ const initializeStore = () => {
     
 
     if (localStorage.accessToken && localStorage.refreshToken) {
-        store.dispatch(loginFromTokens())
+        store.dispatch(loginFromStorage())
     }
 
     return store;

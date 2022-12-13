@@ -13,3 +13,9 @@ export interface UserTokensDto {
     accessToken: string,
     refreshToken: string,
 };
+
+export interface UserState {
+    authenticated: boolean,
+    admin?: boolean,
+    username?: string,
+};

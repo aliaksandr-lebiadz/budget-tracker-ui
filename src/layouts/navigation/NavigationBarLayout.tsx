@@ -24,6 +24,7 @@ const sections = [
             {
                 name: 'Admin',
                 icon: <AdminIcon />,
+                admin: true,
                 nestedItems: [
                     { name: 'Banks' },
                     { name: 'Currencies' },
@@ -60,10 +61,11 @@ const NavigationBarLayout = () => {
     const getProcessedSections = () => {
 
         const [, selectedSection, selectedItem, selectedNestedItem] = pathname.split('/');
-        return sections.map(section => section.name === selectedSection
-            ? {
-                ...section,
-                items: section.items.map(item => item.name.toLowerCase() === selectedItem
+        return sections.map(section => ({
+            ...section,
+            items: section.items
+                .filter(item => admin || !item.admin)
+                .map(item => section.name === selectedSection && item.name.toLowerCase() === selectedItem
                     ? {
                         ...item,
                         selected: true,
@@ -78,9 +80,7 @@ const NavigationBarLayout = () => {
                         nestedItems: item.nestedItems?.map(nestedItem => ({ ...nestedItem, selected: false }))
                     }
                 )
-            }
-            : section
-        );
+        }));
     };
 
     return (

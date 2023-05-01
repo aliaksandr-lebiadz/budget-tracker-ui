@@ -45,6 +45,105 @@ const sections = [
             },
         ],
     },
+    {
+        name: 'analytics1',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics2',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics3',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics4',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics5',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics6',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics7',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics8',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics9',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics10',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
+    {
+        name: 'analytics11',
+        items: [
+            {
+                name: 'Test',
+                icon: <AccountIcon />,
+            },
+        ],
+    },
 ];
 
 const NavigationBarLayout = () => {
@@ -85,33 +184,37 @@ const NavigationBarLayout = () => {
 
     return (
         <Box sx={styles.root(expandedView)}>
-            <MoneyIcon fontSize='large' sx={styles.logo} />
-            <Button sx={styles.toggleButtonWrapper} onClick={() => toggleView()}>
-                {expandedView ? <LeftArrowIcon /> : <RightArrowIcon />}
-            </Button>
-            {expandedView &&
-                <Box sx={styles.userInfoWrapper}>
-                    <Box sx={styles.userInfoIcon}>
-                        {username?.charAt(0)?.toUpperCase()}
+            <Box sx={styles.headerWrapper(expandedView)}>
+                <MoneyIcon fontSize='large' sx={styles.logo} />
+                <Button sx={styles.toggleButtonWrapper} onClick={() => toggleView()}>
+                    {expandedView ? <LeftArrowIcon /> : <RightArrowIcon />}
+                </Button>
+                {expandedView &&
+                    <Box sx={styles.userInfoWrapper}>
+                        <Box sx={styles.userInfoIcon}>
+                            {username?.charAt(0)?.toUpperCase()}
+                        </Box>
+                        <Box sx={styles.userInfoContentWrapper}>
+                            <Typography sx={styles.usernameText}>
+                                {username}
+                            </Typography>
+                            <Typography sx={styles.roleText}>
+                                {admin ? 'admin' : 'user'}
+                            </Typography>
+                        </Box>
                     </Box>
-                    <Box sx={styles.userInfoContentWrapper}>
-                        <Typography sx={styles.usernameText}>
-                            {username}
-                        </Typography>
-                        <Typography sx={styles.roleText}>
-                            {admin ? 'admin' : 'user'}
-                        </Typography>
-                    </Box>
-                </Box>
-            }
-            {getProcessedSections().map(section => (
-                <NavigationBarSection
-                    key={section.name}
-                    expandedView={expandedView}
-                    // @ts-ignore
-                    section={section}
-                />
-            ))}
+                }
+            </Box>
+            <Box sx={styles.sectionsWrapper(expandedView)}>
+                {getProcessedSections().map(section => (
+                    <NavigationBarSection
+                        key={section.name}
+                        expandedView={expandedView}
+                        // @ts-ignore
+                        section={section}
+                    />
+                ))}
+            </Box>
         </Box>
     );
 };

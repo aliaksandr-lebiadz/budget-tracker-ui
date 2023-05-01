@@ -3,14 +3,39 @@ import FontFamily from '../../properties/FontFamily';
 
 const styles = {
     root: (expanded: boolean) => ({
-        width: expanded ? '240px' : '85px',
+        width: expanded ? '240px' : '100px',
         height: '100vh',
         borderRight: `1px dashed ${TransparentColor.GREY}`,
         position: 'relative',
-        padding: expanded ? '20px' : '20px 7px',
+        padding: '3px',
         display: 'flex',
         flexDirection: 'column',
-        rowGap: expanded ? '35px' : '15px',
+    }),
+    headerWrapper: (expanded: boolean) => ({
+        display: 'flex',
+        flexDirection: 'column',
+        padding: expanded ? '20px' : '7px',
+        rowGap: '15px'
+    }),
+    sectionsWrapper: (expanded: boolean) => ({
+        overflowY: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        marginTop: expanded ? '17px' : '10px',
+        rowGap: expanded ? '20px' : '15px',
+        padding: expanded ? '0px 17px 17px 17px' : '0px 10px 10px 10px',
+
+        '&:hover': {
+            overflowY: 'scroll',
+            padding: expanded ? '0px 12px 17px 17px' : '0px 5px 10px 10px',
+        },
+        '&::-webkit-scrollbar': {
+            width: '5px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+            background: TransparentColor.LIGHT_GREY,
+            borderRadius: '3px',
+        }
     }),
     toggleButtonWrapper: {
         position: 'absolute',

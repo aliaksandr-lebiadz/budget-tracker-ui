@@ -17,8 +17,8 @@ const HomeView = () => {
 
     return (
         <>
-            <button onClick={sendHello}>Hello</button>
-            <button onClick={sendHelloAdmin}>Hello admin</button>
+            {/* <button onClick={sendHello}>Hello</button>
+            <button onClick={sendHelloAdmin}>Hello admin</button> */}
         </>
     );
 }

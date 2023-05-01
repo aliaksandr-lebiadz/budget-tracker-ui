@@ -1,32 +1,26 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter, Route, Routes as Switch } from 'react-router-dom';
 
 import LoginView from './login';
 import SignUpView from './sign-up';
 import HomeView from './home';
-import Routes from '../properties/Routes';
 
 import './App.scss';
 import FlashMessagesView from './flash-message';
-
-const router = createBrowserRouter([
-    {
-        path: Routes.HOME,
-        element: <HomeView />,
-    },
-    {
-        path: Routes.LOGIN,
-        element: <LoginView />,
-    },
-    {
-        path: Routes.SIGN_UP,
-        element: <SignUpView />,
-    },
-]);
+import Routes from '../properties/Routes';
+import AuthenticatedPageLayout from '../layouts/authenticated/AuthenticatedPageLayout';
 
 const App = () => (
     <>
         <FlashMessagesView />
-        <RouterProvider router={router} />
+        <BrowserRouter>
+            <Switch>
+                <Route path={Routes.INDEX} element={<AuthenticatedPageLayout />}>
+                    <Route path="/" element={<HomeView />} />
+                </Route>
+                <Route path={Routes.LOGIN} element={<LoginView />} />
+                <Route path={Routes.SIGN_UP} element={<SignUpView />} />
+            </Switch>
+        </BrowserRouter>
     </>
 );
 

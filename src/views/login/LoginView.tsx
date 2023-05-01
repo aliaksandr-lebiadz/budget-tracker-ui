@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { LoginComponents } from '../../components';
-import OnboardingPage from '../onboarding';
-import Routes from '../../properties/Routes';
+import { Checkbox, FormControlLabel } from '@mui/material';
 import { useAppDispatch } from '../../store/store';
 import { login, loginAndRemember } from '../../store/user/userSlice';
+import OnboardingPage from '../onboarding';
+import Routes from '../../properties/Routes';
+
+import styles from './LoginViewStyles';
 
 const LoginView = () => {
 
@@ -29,8 +31,8 @@ const LoginView = () => {
         <OnboardingPage
             title='Login'
             additionalContent={
-                    <LoginComponents.RememberMe.Control
-                        control={<LoginComponents.RememberMe.Checkbox onChange={handleRememberMeChange} />}
+                    <FormControlLabel sx={styles.rememberMeControl}
+                        control={<Checkbox sx={styles.rememberMeCheckbox} onChange={handleRememberMeChange} />}
                         label='Remember me'
                     />
             }

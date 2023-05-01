@@ -1,17 +1,19 @@
-
-import FlashMessageComponents from '../../components/flash-message';
+import { Box } from '@mui/material';
 import { useAppSelector } from '../../store/store';
 import FlashMessage from './FlashMessage';
 
+import styles from './FlashMessageStyles';
+
 const FlashMessagesView = () => {
+    
     const flashMessages = useAppSelector((state) => state.flashMessages);
 
     return (
-        <FlashMessageComponents.Wrapper>
+        <Box sx={styles.root}>
             {flashMessages.map(flashMessage => (
                 <FlashMessage key={flashMessage.id} {...flashMessage} />
             ))}
-        </FlashMessageComponents.Wrapper>
+        </Box>
     );
 };
 

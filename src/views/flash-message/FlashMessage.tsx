@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Paper, Typography, Box } from '@mui/material';
 import {
     CheckCircleRounded as SuccessIcon,
     ErrorRounded as ErrorIcon,
@@ -6,11 +7,12 @@ import {
     CloseSharp as CloseIcon,
 } from '@mui/icons-material';
 
-import FlashMessageComponents from '../../components/flash-message';
-import Colors from '../../properties/Color';
-import { FlashMessageDto, FlashMessageType } from '../../store/flash-message/types';
 import { useAppDispatch } from '../../store/store';
 import { deleteFlashMessageById } from '../../store/flash-message/flashMessageSlice';
+import { FlashMessageDto, FlashMessageType } from '../../store/flash-message/types';
+import { Color } from '../../properties/Color';
+
+import styles from './FlashMessageStyles';
 
 const FlashMessage = ({ id, type, message }: FlashMessageDto) => {
 
@@ -29,34 +31,34 @@ const FlashMessage = ({ id, type, message }: FlashMessageDto) => {
 
     const getStatusIcon = (type: FlashMessageType): JSX.Element => {
         switch(type) {
-            case FlashMessageType.SUCCESS: return <SuccessIcon htmlColor={Colors.LIGHT_GREEN} />;
-            case FlashMessageType.INFO: return <InfoIcon htmlColor={Colors.LIGHT_BLUE} />;
-            case FlashMessageType.ERROR: return <ErrorIcon htmlColor={Colors.LIGHT_RED} />;
+            case FlashMessageType.SUCCESS: return <SuccessIcon htmlColor={Color.LIGHT_GREEN} />;
+            case FlashMessageType.INFO: return <InfoIcon htmlColor={Color.LIGHT_BLUE} />;
+            case FlashMessageType.ERROR: return <ErrorIcon htmlColor={Color.LIGHT_RED} />;
         }
     };
 
     return (
-        <FlashMessageComponents.Message.Wrapper elevation={5}>
-            <FlashMessageComponents.Message.Line type={type} />
-            <FlashMessageComponents.Message.StatusIconWrapper>
+        <Paper sx={styles.wrapper} elevation={5}>
+            <Box sx={styles.line(type)} />
+            <Box sx={styles.statusIconWrapper}>
                 {getStatusIcon(type)}
-            </FlashMessageComponents.Message.StatusIconWrapper>
-            <FlashMessageComponents.Message.Text.Wrapper expanded={expanded}>
-                <FlashMessageComponents.Message.Text.Title>
+            </Box>
+            <Box sx={styles.textWrapper(expanded)}>
+                <Typography sx={styles.textTitle}>
                     {type}
-                </FlashMessageComponents.Message.Text.Title>
-                <FlashMessageComponents.Message.Text.Content onClick={handleTextClick}>
+                </Typography>
+                <Typography sx={styles.textContent} onClick={handleTextClick}>
                     {message}
-                </FlashMessageComponents.Message.Text.Content>
-            </FlashMessageComponents.Message.Text.Wrapper>
-            <FlashMessageComponents.Message.CloseIconWrapper>
+                </Typography>
+            </Box>
+            <Box sx={styles.closeIconWrapper}>
                 <CloseIcon
-                    htmlColor={Colors.GREY}
+                    htmlColor={Color.GREY}
                     fontSize='small'
                     onClick={handleClose}
                 />
-            </FlashMessageComponents.Message.CloseIconWrapper>
-        </FlashMessageComponents.Message.Wrapper>
+            </Box>
+        </Paper>
     );
 };
 

@@ -37,7 +37,7 @@ export const withoutAuthentication = (WrappedComponent: any) => {
 
     const WithoutAuthentication = (props: Props) => (
         props.authenticated
-            ? <Navigate to={{ pathname: Routes.HOME }} />
+            ? <Navigate to={{ pathname: Routes.INDEX }} />
             : <WrappedComponent {...props} />
     );
 

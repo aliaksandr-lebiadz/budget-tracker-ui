@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+    Box,
+    Button,
+    InputAdornment,
+    Paper,
+    TextField,
+    Typography,
+} from '@mui/material';
 import {
     PersonOutlineOutlined as UsernameIcon,
     LockOutlined as PasswordIcon,
 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
-
-import { OnboardingComponents } from '../../components';
 import OnboardingService from '../../services/OnboardingService';
+
+import styles from './OnboardingViewStyles';
 
 interface HintLinkProps {
     text: string,
@@ -86,14 +94,16 @@ const OnboardingView = (props: Props) => {
     };
 
     return (
-        <OnboardingComponents.Wrapper>
-            <OnboardingComponents.Dialog elevation={3}>
-                <OnboardingComponents.Title.Wrapper component='div'>
-                    <OnboardingComponents.Title.Text>{props.title}</OnboardingComponents.Title.Text>
-                </OnboardingComponents.Title.Wrapper>
-                <OnboardingComponents.Content.Wrapper>
-                    <OnboardingComponents.Content.Form onSubmit={handleSubmit}>
-                        <OnboardingComponents.Content.TextField
+        <Box sx={styles.root}>
+            <Paper elevation={3} sx={styles.dialog}>
+                <Box sx={styles.titleWrapper}>
+                    <Typography sx={styles.titleText}>
+                        {props.title}
+                    </Typography>
+                </Box>
+                <Box sx={styles.contentWrapper}>
+                    <Box component='form' sx={styles.form} onSubmit={handleSubmit}>
+                        <TextField sx={styles.textField}
                             type='text'
                             name='username'
                             placeholder='Username'
@@ -101,9 +111,9 @@ const OnboardingView = (props: Props) => {
                             variant='filled'
                             InputProps={{
                                 startAdornment: (
-                                    <OnboardingComponents.Content.IconWrapper position='start'>
+                                    <InputAdornment sx={styles.iconWrapper} position='start'>
                                         <UsernameIcon />
-                                    </OnboardingComponents.Content.IconWrapper>
+                                    </InputAdornment>
                                 ),
                                 disableUnderline: true,
                             }}
@@ -111,7 +121,7 @@ const OnboardingView = (props: Props) => {
                             helperText={state.errors.username && 'Length should be from 6 to 32'}
                             onChange={handleInputChange}
                         />
-                        <OnboardingComponents.Content.TextField
+                        <TextField sx={styles.textField}
                             type='password'
                             name='password'
                             placeholder='Password'
@@ -119,9 +129,9 @@ const OnboardingView = (props: Props) => {
                             variant='filled'
                             InputProps={{
                                 startAdornment: (
-                                    <OnboardingComponents.Content.IconWrapper position='start'>
+                                    <InputAdornment sx={styles.iconWrapper} position='start'>
                                         <PasswordIcon />
-                                    </OnboardingComponents.Content.IconWrapper>
+                                    </InputAdornment>
                                 ),
                                 disableUnderline: true,
                             }}
@@ -130,20 +140,20 @@ const OnboardingView = (props: Props) => {
                             onChange={handleInputChange}
                         />
                         {props.additionalContent}
-                        <OnboardingComponents.Content.Button
+                        <Button sx={styles.button}
                             variant='contained'
                             type='submit'
                             disabled={state.errors.username || state.errors.password}
                         >
                             {props.title}
-                        </OnboardingComponents.Content.Button>
-                    </OnboardingComponents.Content.Form>
-                    <OnboardingComponents.Content.Hint>
+                        </Button>
+                    </Box>
+                    <Typography sx={styles.hint}>
                         {props.hint.text} <Link to={props.hint.link.route}>{props.hint.link.text}</Link>
-                    </OnboardingComponents.Content.Hint>
-                </OnboardingComponents.Content.Wrapper>
-            </OnboardingComponents.Dialog>
-        </OnboardingComponents.Wrapper>
+                    </Typography>
+                </Box>
+            </Paper>
+        </Box>
     )
 };
 

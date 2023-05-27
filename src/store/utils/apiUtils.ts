@@ -7,11 +7,11 @@ import { HttpStatus, HttpMethod, HttpHeaders } from '../../types/api';
 interface Config<T> {
     url: string,
     method: HttpMethod,
-    data: T,
+    data: T | null,
     headers: any,
 };
 
-export const callApi = <T, R>(path: string, payload: T, method: HttpMethod = HttpMethod.GET, authorized = true) => {
+export const callApi = <T, R>(path: string, payload: T | null = null, method: HttpMethod = HttpMethod.GET, authorized = true) => {
 
     let config: Config<T> = {
         url: `${process.env.REACT_APP_API_URL}${path}`,

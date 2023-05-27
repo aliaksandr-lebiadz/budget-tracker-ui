@@ -10,6 +10,3 @@ export const signUpApi = (credentials: UserCredentialsDto) => callApi<UserCreden
 
 export const refreshTokenApi = (refreshToken: StringWrapper) => callApi<StringWrapper, string>(REFRESH_TOKEN_PATH, refreshToken, HttpMethod.POST, false);
 
-export const helloApi = () => callApi<undefined, string>('/hello', undefined);
-
-export const helloAdminApi = () => callApi<undefined, string>('/hello/admin', undefined);

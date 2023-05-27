@@ -9,6 +9,7 @@ export enum Color {
     LIGHT_RED = '#ff6262',
     LIGHT_BLUE = '#2780ec',
     WHITE = '#ffffff',
+    DARK_BLUE = '#111927',
 };
 
 export enum TransparentColor {

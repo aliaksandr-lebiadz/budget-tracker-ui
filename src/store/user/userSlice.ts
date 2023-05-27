@@ -5,35 +5,25 @@ import { TOKENS_LIFETIME } from '../../properties/Properties';
 import LocalStorageItem from '../../properties/LocalStorageItem';
 import Message from '../../properties/Messages';
 import { SliceName } from '../../types/store';
-import { helloAdminApi, helloApi, loginApi, signUpApi } from './userApi';
+import { loginApi, signUpApi } from './userApi';
 import { UserAsyncActionType, UserCredentialsDto, UserState, UserTokensDto } from './types';
 
 export const login = createCommonAsyncAction<UserCredentialsDto, UserTokensDto>(
     UserAsyncActionType.LOGIN,
     (credentials) => loginApi(credentials),
-    Message.LOGIN_SUCCESS,
+    () => Message.LOGIN_SUCCESS,
 );
 
 export const loginAndRemember = createCommonAsyncAction<UserCredentialsDto, UserTokensDto>(
     UserAsyncActionType.LOGIN_AND_REMEMBER,
     (credentials) => loginApi(credentials),
-    Message.LOGIN_SUCCESS,
+    () => Message.LOGIN_SUCCESS,
 );
 
 export const signUp = createCommonAsyncAction<UserCredentialsDto, void>(
     UserAsyncActionType.SIGN_UP,
     (credentials) => signUpApi(credentials),
-    Message.SIGN_UP_SUCCESS,
-);
-
-export const hello = createCommonAsyncAction<undefined, string>(
-    'hello',
-    () => helloApi()
-);
-
-export const helloAdmin = createCommonAsyncAction<undefined, string>(
-    'helloAdmin',
-    () => helloAdminApi(),
+    () => Message.SIGN_UP_SUCCESS,
 );
 
 const userSlice = createSlice({

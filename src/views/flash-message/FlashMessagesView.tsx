@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { useAppSelector } from '../../store/store';
 import FlashMessage from './FlashMessage';
 
-import styles from './FlashMessageStyles';
+import styles from './FlashMessageView.styles';
 
 const FlashMessagesView = () => {
     

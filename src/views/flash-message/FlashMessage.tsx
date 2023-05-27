@@ -1,18 +1,17 @@
 import { useState } from 'react';
-import { Paper, Typography, Box } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import {
     CheckCircleRounded as SuccessIcon,
     ErrorRounded as ErrorIcon,
     InfoRounded as InfoIcon,
     CloseSharp as CloseIcon,
 } from '@mui/icons-material';
-
 import { useAppDispatch } from '../../store/store';
 import { deleteFlashMessageById } from '../../store/flash-message/flashMessageSlice';
 import { FlashMessageDto, FlashMessageType } from '../../store/flash-message/types';
 import { Color } from '../../properties/Color';
 
-import styles from './FlashMessageStyles';
+import styles from './FlashMessageView.styles';
 
 const FlashMessage = ({ id, type, message }: FlashMessageDto) => {
 
@@ -38,20 +37,20 @@ const FlashMessage = ({ id, type, message }: FlashMessageDto) => {
     };
 
     return (
-        <Paper sx={styles.wrapper} elevation={5}>
-            <Box sx={styles.line(type)} />
-            <Box sx={styles.statusIconWrapper}>
+        <Paper sx={styles.message.wrapper} elevation={5}>
+            <Box sx={styles.message.line(type)} />
+            <Box sx={styles.message.statusIconWrapper}>
                 {getStatusIcon(type)}
             </Box>
-            <Box sx={styles.textWrapper(expanded)}>
-                <Typography sx={styles.textTitle}>
+            <Box sx={styles.message.text.wrapper(expanded)}>
+                <Typography sx={styles.message.text.title}>
                     {type}
                 </Typography>
-                <Typography sx={styles.textContent} onClick={handleTextClick}>
+                <Typography sx={styles.message.text.content} onClick={handleTextClick}>
                     {message}
                 </Typography>
             </Box>
-            <Box sx={styles.closeIconWrapper}>
+            <Box sx={styles.message.closeIconWrapper}>
                 <CloseIcon
                     htmlColor={Color.GREY}
                     fontSize='small'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
     Box,
@@ -14,7 +14,7 @@ import {
 } from '@mui/icons-material';
 import OnboardingService from '../../services/OnboardingService';
 
-import styles from './OnboardingViewStyles';
+import styles from './OnboardingView.styles';
 
 interface HintLinkProps {
     text: string,
@@ -33,77 +33,71 @@ interface Props {
     onboard: (username: string, password: string) => void
 };
 
-interface State {
+interface FieldsState {
     username?: string,
     password?: string,
-    errors: {
-        username: boolean,
-        password: boolean,
-        show: boolean,
-    },
+};
+
+interface ErrorsState {
+    username: boolean,
+    password: boolean,
+    show: boolean,
 };
 
 const OnboardingView = (props: Props) => {
     
-    const initialState = { 
-        errors: {
-            username: false,
-            password: false,
-            show: false,
-        },
-    };
+    const [fields, setFields] = useState<FieldsState>({});
 
-    const [state, setState] = useState<State>(initialState);
+    const [errors, setErrors] = useState<ErrorsState>({
+        username: false,
+        password: false,
+        show: false,
+    });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const { name, value } = e.target;
-        setState((previousState: State) => ({
-            ...previousState,
+        setFields(previousFields => ({
+            ...previousFields,
             [name]: value,
-            errors: {
-                ...previousState.errors,
-                // @ts-ignore
-                [name]: previousState.errors.show ? !OnboardingService.isValid(name, value) : previousState.errors[name],
-            },
+        }));
+        setErrors(previousErrors => ({
+            ...previousErrors,
+            //@ts-ignore
+            [name]: previousErrors.show ? !OnboardingService.isValid(name, value) : previousErrors[name],
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit: React.FormEventHandler<HTMLDivElement> = (e: React.FormEvent<HTMLDivElement>) => {
         
         e.preventDefault();
 
-        const usernameValid = OnboardingService.isUsernameValid(state.username);
-        const passwordValid = OnboardingService.isPasswordValid(state.password);
+        const usernameValid = OnboardingService.isUsernameValid(fields.username);
+        const passwordValid = OnboardingService.isPasswordValid(fields.password);
         if (!usernameValid || !passwordValid) {
-            setState((previousState: State) => ({
-                ...previousState,
-                errors: {
-                    username: !usernameValid,
-                    password: !passwordValid,
-                    show: true,
-                },
-            }));
+            setErrors({
+                username: !usernameValid,
+                password: !passwordValid,
+                show: true,
+            });
         } else {
-            props.onboard(state.username!, state.password!);
-            setState((previousState: State) => ({
-                ...previousState,
-                initialState,
-            }));
+            props.onboard(fields.username!, fields.password!);
         }
     };
 
     return (
         <Box sx={styles.root}>
-            <Paper elevation={3} sx={styles.dialog}>
-                <Box sx={styles.titleWrapper}>
-                    <Typography sx={styles.titleText}>
+            <Paper sx={styles.dialog.wrapper} elevation={3}>
+                <Box sx={styles.dialog.title.wrapper}>
+                    <Typography sx={styles.dialog.title.text}>
                         {props.title}
                     </Typography>
                 </Box>
-                <Box sx={styles.contentWrapper}>
-                    <Box component='form' sx={styles.form} onSubmit={handleSubmit}>
-                        <TextField sx={styles.textField}
+                <Box sx={styles.dialog.content.wrapper}>
+                    <Box sx={styles.dialog.content.form} component='form' onSubmit={handleSubmit}>
+                        <TextField
+                            sx={styles.dialog.content.textField}
+                            autoFocus
                             type='text'
                             name='username'
                             placeholder='Username'
@@ -111,17 +105,18 @@ const OnboardingView = (props: Props) => {
                             variant='filled'
                             InputProps={{
                                 startAdornment: (
-                                    <InputAdornment sx={styles.iconWrapper} position='start'>
+                                    <InputAdornment sx={styles.dialog.content.iconWrapper} position='start'>
                                         <UsernameIcon />
                                     </InputAdornment>
                                 ),
                                 disableUnderline: true,
                             }}
-                            error={state.errors.username}
-                            helperText={state.errors.username && 'Length should be from 6 to 32'}
+                            error={errors.username}
+                            helperText={errors.username && OnboardingService.messages.invalidUsername}
                             onChange={handleInputChange}
                         />
-                        <TextField sx={styles.textField}
+                        <TextField
+                            sx={styles.dialog.content.textField}
                             type='password'
                             name='password'
                             placeholder='Password'
@@ -129,32 +124,33 @@ const OnboardingView = (props: Props) => {
                             variant='filled'
                             InputProps={{
                                 startAdornment: (
-                                    <InputAdornment sx={styles.iconWrapper} position='start'>
+                                    <InputAdornment sx={styles.dialog.content.iconWrapper} position='start'>
                                         <PasswordIcon />
                                     </InputAdornment>
                                 ),
                                 disableUnderline: true,
                             }}
-                            error={state.errors.password}
-                            helperText={state.errors.password && 'Length should be from 8 to 32'}
+                            error={errors.password}
+                            helperText={errors.password && OnboardingService.messages.invalidPassword}
                             onChange={handleInputChange}
                         />
                         {props.additionalContent}
-                        <Button sx={styles.button}
+                        <Button
+                            sx={styles.dialog.content.button}
                             variant='contained'
                             type='submit'
-                            disabled={state.errors.username || state.errors.password}
+                            disabled={errors.username || errors.password}
                         >
                             {props.title}
                         </Button>
                     </Box>
-                    <Typography sx={styles.hint}>
+                    <Typography sx={styles.dialog.content.hint}>
                         {props.hint.text} <Link to={props.hint.link.route}>{props.hint.link.text}</Link>
                     </Typography>
                 </Box>
             </Paper>
         </Box>
-    )
+    );
 };
 
 export default OnboardingView;

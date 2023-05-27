@@ -1,8 +1,8 @@
-import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { Outlet } from 'react-router-dom';
 import NavigationBarLayout from '../navigation';
 
-import styles from './AuthenticatedPageLayoutStyles';
+import styles from './AuthenticatedPageLayout.styles';
 
 const AuthenticatedPageLayout = () => (
     <>

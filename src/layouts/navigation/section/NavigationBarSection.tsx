@@ -1,11 +1,11 @@
-import { Box, Divider, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Box, Divider, Typography } from '@mui/material';
 import Routes from '../../../properties/Routes';
 import NavigationBarItem, { ItemProps } from '../item/NavigationBarItem';
 
-import styles from './NavigationBarSectionStyles';
+import styles from './NavigationBarSection.styles';
 
-interface SectionProps {
+export interface SectionProps {
     name: string,
     items: ItemProps[],
 };
@@ -42,7 +42,7 @@ const NavigationBarSection = ({ section, expandedView }: Props) => {
                 />
             ))}
         </Box>
-    )
+    );
 };
 
 export default NavigationBarSection;

@@ -8,21 +8,21 @@ import { REFRESH_TOKEN_PATH } from '../../properties/api/ApiNavigation';
 import { AsyncActionState } from '../../types/store';
 import { FlashMessageType } from '../flash-message/types';
 
-export const createCommonAsyncAction = <T, R>(type: string, api: (__: T) => Promise<AxiosResponse<R, any>>, successMessage?: string) => {
-    return createAsyncThunk<R, T>(type, async(payload: T, { dispatch }) => {
+export const createCommonAsyncAction = <T, R>(type: string, api: (__: T) => Promise<AxiosResponse<R, any>>, successMessageFunction?: (data: R) => string) => {
+    return createAsyncThunk<R, T>(type, async (payload: T, { dispatch }) => {
         try {
-            const response = await api(payload);
-    
-            if (successMessage) {
+            const { data } = await api(payload);
+
+            if (successMessageFunction) {
                 dispatch(addFlashMessage({
                     id: nextId(),
                     type: FlashMessageType.SUCCESS,
-                    message: successMessage,
+                    message: successMessageFunction(data),
                 }));
             }
 
-            return response.data;
-        } catch(error) {
+            return data;
+        } catch (error) {
             if (axios.isAxiosError(error)) {
                 if (error?.response?.config.url?.endsWith(REFRESH_TOKEN_PATH)) {
                     dispatch(logOut());
@@ -33,11 +33,11 @@ export const createCommonAsyncAction = <T, R>(type: string, api: (__: T) => Prom
                         type: FlashMessageType.ERROR,
                         message: errorMessage,
                     }));
-        
+
                     throw errorMessage;
                 }
             }
-    
+
             // eslint-disable-next-line
             throw UNEXPECTED_ERROR;
         }

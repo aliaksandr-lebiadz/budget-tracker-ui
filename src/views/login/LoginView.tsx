@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { useAppDispatch } from '../../store/store';
 import { login, loginAndRemember } from '../../store/user/userSlice';
-import OnboardingPage from '../onboarding';
 import Routes from '../../properties/Routes';
 
-import styles from './LoginViewStyles';
+import OnboardingPage from '../onboarding';
+
+import styles from './LoginView.styles';
 
 const LoginView = () => {
 
@@ -31,9 +32,18 @@ const LoginView = () => {
         <OnboardingPage
             title='Login'
             additionalContent={
-                    <FormControlLabel sx={styles.rememberMeControl}
-                        control={<Checkbox sx={styles.rememberMeCheckbox} onChange={handleRememberMeChange} />}
-                        label='Remember me'
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                sx={styles.rememberMe.checkbox}
+                                onChange={handleRememberMeChange}
+                            />
+                        }
+                        label={
+                            <Typography sx={styles.rememberMe.label}>
+                                Remember me
+                            </Typography>
+                        }
                     />
             }
             hint={{

@@ -1,21 +1,19 @@
 import { useState } from 'react';
-import {
-    Box,
-    Button,
-    Typography,
-} from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import {
     ChevronRight as RightArrowIcon,
     ChevronLeft as LeftArrowIcon,
-    Paid as MoneyIcon,
     AdminPanelSettings as AdminIcon,
     AccountBalanceWallet as AccountIcon,
+    Paid as MoneyIcon,
 } from '@mui/icons-material';
 import { useAppSelector } from '../../store/store';
 import { useLocation } from 'react-router-dom';
 
-import styles from './NavigationBarLayoutStyles';
 import NavigationBarSection from './section/NavigationBarSection';
+
+import styles from './NavigationBarLayout.styles';
+import { NavigationBarService } from '../../services';
 
 const sections = [
     {
@@ -23,8 +21,8 @@ const sections = [
         items: [
             {
                 name: 'Admin',
-                icon: <AdminIcon />,
                 admin: true,
+                icon: <AdminIcon />,
                 nestedItems: [
                     { name: 'Banks' },
                     { name: 'Currencies' },
@@ -32,6 +30,7 @@ const sections = [
             },
             {
                 name: 'Accounts',
+                admin: false,
                 icon: <AccountIcon />,
             },
         ],
@@ -41,105 +40,7 @@ const sections = [
         items: [
             {
                 name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics1',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics2',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics3',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics4',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics5',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics6',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics7',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics8',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics9',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics10',
-        items: [
-            {
-                name: 'Test',
-                icon: <AccountIcon />,
-            },
-        ],
-    },
-    {
-        name: 'analytics11',
-        items: [
-            {
-                name: 'Test',
+                admin: false,
                 icon: <AccountIcon />,
             },
         ],
@@ -157,63 +58,39 @@ const NavigationBarLayout = () => {
         setExpandedView(!expandedView);
     };
 
-    const getProcessedSections = () => {
-
-        const [, selectedSection, selectedItem, selectedNestedItem] = pathname.split('/');
-        return sections.map(section => ({
-            ...section,
-            items: section.items
-                .filter(item => admin || !item.admin)
-                .map(item => section.name === selectedSection && item.name.toLowerCase() === selectedItem
-                    ? {
-                        ...item,
-                        selected: true,
-                        nestedItems: item.nestedItems?.map(nestedItem => nestedItem.name.toLowerCase() === selectedNestedItem
-                            ? { ...nestedItem, selected: true }
-                            : { ...nestedItem, selected: false }
-                        )
-                    }
-                    : {
-                        ...item,
-                        selected: false,
-                        nestedItems: item.nestedItems?.map(nestedItem => ({ ...nestedItem, selected: false }))
-                    }
-                )
-        }));
-    };
-
     return (
         <Box sx={styles.root(expandedView)}>
-            <Box sx={styles.headerWrapper(expandedView)}>
-                <MoneyIcon fontSize='large' sx={styles.logo} />
-                <Button sx={styles.toggleButtonWrapper} onClick={() => toggleView()}>
+            <Box sx={styles.header.wrapper(expandedView)}>
+                <MoneyIcon sx={styles.header.logo} fontSize='large' />
+                <Button sx={styles.header.toggleButton} onClick={() => toggleView()}>
                     {expandedView ? <LeftArrowIcon /> : <RightArrowIcon />}
                 </Button>
                 {expandedView &&
-                    <Box sx={styles.userInfoWrapper}>
-                        <Box sx={styles.userInfoIcon}>
+                    <Box sx={styles.header.userInfo.wrapper}>
+                        <Box sx={styles.header.userInfo.icon}>
                             {username?.charAt(0)?.toUpperCase()}
                         </Box>
-                        <Box sx={styles.userInfoContentWrapper}>
-                            <Typography sx={styles.usernameText}>
+                        <Box sx={styles.header.userInfo.content.wrapper}>
+                            <Typography sx={styles.header.userInfo.content.usernameText}>
                                 {username}
                             </Typography>
-                            <Typography sx={styles.roleText}>
+                            <Typography sx={styles.header.userInfo.content.roleText}>
                                 {admin ? 'admin' : 'user'}
-                            </Typography>
+                                </Typography>
                         </Box>
                     </Box>
                 }
             </Box>
             <Box sx={styles.sectionsWrapper(expandedView)}>
-                {getProcessedSections().map(section => (
-                    <NavigationBarSection
-                        key={section.name}
-                        expandedView={expandedView}
-                        // @ts-ignore
-                        section={section}
-                    />
-                ))}
+                {//@ts-ignore
+                    NavigationBarService.getProcessedSections(sections, pathname, admin).map(section => (
+                        <NavigationBarSection
+                            key={section.name}
+                            expandedView={expandedView}
+                            section={section}
+                        />
+                    ))
+                }
             </Box>
         </Box>
     );

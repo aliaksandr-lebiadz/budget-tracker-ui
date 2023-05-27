@@ -10,18 +10,19 @@ import Message from '../properties/Messages';
 import { RootState } from '../store/store';
 import { FlashMessageType } from '../store/flash-message/types';
 
-export const withAuthentication = (WrappedComponent: any) => {
+export const withAuthentication = (WrappedComponent: any, admin: boolean = false) => {
 
     type Props = PropsFromRedux;
 
     const WithAuthentication = (props: Props) => (
         props.authenticated
-            ? <WrappedComponent {...props} />
+            ? (props.admin || !admin ? <WrappedComponent {...props} /> : <Navigate to={{ pathname: Routes.INDEX }} />)
             : <Navigate to={{ pathname: Routes.LOGIN }} />
     );
 
     const mapStateToProps = (state: RootState) => ({
         authenticated: state.user.authenticated,
+        admin: state.user.admin,
     });
 
     const connector = connect(mapStateToProps);

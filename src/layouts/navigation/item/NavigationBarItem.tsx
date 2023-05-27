@@ -6,7 +6,7 @@ import {
 } from '@mui/icons-material';
 import Routes from '../../../properties/Routes';
 
-import { expandedViewStyles, collapsedViewStyles } from './NavigationBarItemStyles';
+import styles from './NavigationBarItem.styles';
 
 interface NestedItemProps {
     name: string,
@@ -15,6 +15,7 @@ interface NestedItemProps {
 
 export interface ItemProps extends NestedItemProps {
     icon: JSX.Element,
+    admin: boolean,
     nestedItems?: NestedItemProps[],
 };
 
@@ -57,23 +58,23 @@ const NavigationBarItem = ({ item, onSelect, expandedView }: Props) => {
     return expandedView
         ? <>
             <Box
-                sx={expandedViewStyles.itemWrapper(item.selected)}
+                sx={styles.expanded.root(item.selected)}
                 onClick={() => item.nestedItems ? toggleItem() : handleSelect()}
             >
                 {item.icon}
                 {item.name}
                 {item.nestedItems && (expanded
-                    ? <BottomArrowIcon sx={expandedViewStyles.toggleIcon} />
-                    : <RightArrowIcon sx={expandedViewStyles.toggleIcon} />
+                    ? <BottomArrowIcon sx={styles.expanded.toggleIcon} />
+                    : <RightArrowIcon sx={styles.expanded.toggleIcon} />
                 )}
             </Box>
             {expanded && item.nestedItems?.map(nestedItem => (
                 <Box
+                    sx={styles.expanded.nested.wrapper(nestedItem.selected)}
                     key={nestedItem.name}
-                    sx={expandedViewStyles.nestedItemWrapper(nestedItem.selected)}
                     onClick={() => handleSelectNested(nestedItem)}
                 >
-                    <Box sx={expandedViewStyles.nestedItemDot(nestedItem.selected)}>
+                    <Box sx={styles.expanded.nested.dot(nestedItem.selected)}>
                         {nestedItem.selected ? <span>&#9679;</span> : <span>&#8226;</span>}
                     </Box>
                     {nestedItem.name}
@@ -82,7 +83,7 @@ const NavigationBarItem = ({ item, onSelect, expandedView }: Props) => {
         </>
         : <>
             <Box
-                sx={collapsedViewStyles.itemWrapper(item.selected)}
+                sx={styles.collapsed.root(item.selected)}
                 onClick={() => !item.nestedItems && handleSelect()}
                 onMouseEnter={() => toggleItem()}
                 onMouseLeave={() => toggleItem()}
@@ -91,13 +92,13 @@ const NavigationBarItem = ({ item, onSelect, expandedView }: Props) => {
                 {item.name}
                 {item.nestedItems && (
                     <>
-                        <RightArrowIcon sx={collapsedViewStyles.toggleIcon} />
-                        {expanded && <Paper elevation={5} sx={collapsedViewStyles.nestedItemsWrapper}>
+                        <RightArrowIcon sx={styles.collapsed.toggleIcon} />
+                        {expanded && <Paper sx={styles.collapsed.nested.wrapper} elevation={5}>
                             {item.nestedItems?.map((nestedItem, index) => (
                                 <Box
+                                    sx={styles.collapsed.nested.element(nestedItem.selected)}
                                     key={nestedItem.name}
                                     tabIndex={index}
-                                    sx={collapsedViewStyles.nestedItemWrapper(nestedItem.selected)}
                                     onClick={() => handleSelectNested(nestedItem)}
                                 >
                                     {nestedItem.name}

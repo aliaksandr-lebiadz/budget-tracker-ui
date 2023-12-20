@@ -9,11 +9,11 @@ class NavigationBarService {
             ...section,
             items: section.items
                 .filter(item => admin || !item.admin)
-                .map(item => section.name === selectedSection && item.name.toLowerCase() === selectedItem
+                .map(item => this.toPathPartInternal(section.name) === selectedSection && this.toPathPartInternal(item.name) === selectedItem
                     ? {
                         ...item,
                         selected: true,
-                        nestedItems: item.nestedItems?.map(nestedItem => nestedItem.name.toLowerCase() === selectedNestedItem
+                        nestedItems: item.nestedItems?.map(nestedItem => this.toPathPartInternal(nestedItem.name) === selectedNestedItem
                             ? { ...nestedItem, selected: true }
                             : { ...nestedItem, selected: false }
                         )
@@ -26,6 +26,10 @@ class NavigationBarService {
                 )
         }));
     };
+
+    static toPathPart = (itemName: string): string => '/' + this.toPathPartInternal(itemName);
+
+    private static toPathPartInternal = (itemName: string): string => itemName.toLowerCase().replaceAll(' ', '-');
 };
 
 export default NavigationBarService;

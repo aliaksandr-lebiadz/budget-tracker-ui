@@ -19,30 +19,34 @@ import {
     AddRounded as AddIcon,
     CloseRounded as CloseIcon,
     CheckRounded as AcceptIcon,
+    FileUploadOutlined as UploadIcon,
 } from '@mui/icons-material';
+import { usePrevious } from '../../hooks';
+import nextId from 'react-id-generator';
 import { useAppDispatch, useAppSelector } from '../../store/store';
-import { changeCurrency, getCurrencies } from '../../store/currency/currencySlice';
-import { CurrencyService } from '../../services';
+import { changeCardType, getCardTypes } from '../../store/card-type/cardTypeSlice';
+import { addFlashMessage } from '../../store/flash-message/flashMessageSlice';
+import { CardTypeDto } from '../../store/card-type/types';
+import { FlashMessageType } from '../../store/flash-message/types';
+import CardTypeService from '../../services/CardTypeService';
 import KeyboardKeys from '../../properties/KeyboardKeys';
-import { CurrencyDto } from '../../store/currency/types';
 
 import Loading from '../../components/loading/Loading';
-import DeleteCurrencyAlert from './delete/DeleteCurrencyAlert';
-import NewCurrencyDialog from './new/NewCurrencyDialog';
+import DeleteCardTypeAlert from './alert/DeleteCardTypeAlert';
+import NewCardTypeDialog from './new/NewCardTypeDialog';
 
-import styles from './CurrenciesView.styles';
-import { usePrevious } from '../../hooks';
+import styles from './CardTypesView.styles';
 
 interface DeleteAlertOptions {
     open: boolean,
     id: number | null,
 };
 
-const CurrenciesView = () => {
+const CardTypesView = () => {
 
     const dispatch = useAppDispatch();
-    const currencies = useAppSelector((state) => state.currencies.data);
-    const loading = useAppSelector((state) => state.currencies.loading);
+    const cardTypes = useAppSelector((state) => state.cardTypes.data);
+    const loading = useAppSelector((state) => state.cardTypes.loading);
     const previousLoading = usePrevious(loading);
 
     const [page, setPage] = useState(0);
@@ -52,18 +56,17 @@ const CurrenciesView = () => {
         id: null,
     });
     const [newDialogOpen, setNewDialogOpen] = useState(false);
-    const [editing, setEditing] = useState<CurrencyDto>();
+    const [editing, setEditing] = useState<CardTypeDto>();
     
     const editingErrorsInitialState = {
         name: false,
-        code: false,
         show: false,
     };
     const [editingErrors, setEditingErrors] = useState(editingErrorsInitialState);
 
     useEffect(() => {
 
-        dispatch(getCurrencies());
+        dispatch(getCardTypes());
     }, [dispatch]);
 
     useEffect(() => {
@@ -104,7 +107,7 @@ const CurrenciesView = () => {
         });
     }
 
-    const handleEditIconClick = (row: CurrencyDto) => {
+    const handleEditIconClick = (row: CardTypeDto) => {
 
         setEditing(row);
     };
@@ -115,21 +118,21 @@ const CurrenciesView = () => {
         setEditingErrors(editingErrorsInitialState);
     };
 
-    const handleEditingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
-        const { name, value } = e.target;
+        const { value } = e.target;
         setEditing(previousState => ({
             ...previousState!,
-            [name]: value,
+            name: value,
         }));
         setEditingErrors(previousErrors => ({
             ...previousErrors,
             //@ts-ignore
-            [name]: previousErrors.show ? !CurrencyService.isValid(name, value) : previousErrors[name],
+            name: previousErrors.show ? !CardTypeService.isNameValid(value) : previousErrors.name,
         }));
     };
 
-    const handleEditingKeyDown = (key: string, row: CurrencyDto) => {
+    const handleEditingKeyDown = (key: string, row: CardTypeDto) => {
 
         if (key === KeyboardKeys.ENTER) {
             handleEditingAccept(row);
@@ -138,18 +141,16 @@ const CurrenciesView = () => {
         }
     };
 
-    const handleEditingAccept = (row: CurrencyDto) => {
+    const handleEditingAccept = (row: CardTypeDto) => {
         
-        const nameValid = CurrencyService.isNameValid(editing?.name);
-        const codeValid = CurrencyService.isCodeValid(editing?.code);
-        if (!nameValid || !codeValid) {
+        const nameValid = CardTypeService.isNameValid(editing?.name);
+        if (!nameValid) {
             setEditingErrors({
                 name: !nameValid,
-                code: !codeValid,
                 show: true,
             });
-        } else if (editing?.name !== row.name || editing?.code !== row.code) {
-            dispatch(changeCurrency(editing!));
+        } else if (editing?.name !== row.name || editing?.icon !== row.icon) {
+            dispatch(changeCardType(editing!));
         } else {
             handleCloseIconClick();
         }
@@ -160,11 +161,40 @@ const CurrenciesView = () => {
         setNewDialogOpen(!newDialogOpen);
     };
 
+    const handleIconUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        const image = new Image();
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = () => {
+                image.src = reader.result?.toString()!!;
+            };
+
+            image.onload = () => {
+                if (CardTypeService.isIconValid(image.width, image.height)) {
+                    setEditing(previousState => ({
+                        ...previousState!,
+                        icon: image.src.substring(image.src.indexOf('base64') + 'base64'.length + 1),
+                    }));
+                } else {
+                    dispatch(addFlashMessage({
+                        id: nextId(),
+                        type: FlashMessageType.ERROR,
+                        message: CardTypeService.messages.invalidIcon,
+                    }));
+                }
+            }
+        }
+    }
+
     return (
         <Box sx={styles.root}>
             <Box sx={styles.header.wrapper}>
                 <Typography sx={styles.header.title}>
-                    Currencies
+                    Card Types
                 </Typography>
                 {loading.get && <Loading />}
                 <Button sx={styles.header.button.wrapper} variant='contained' onClick={toggleNewDialog}>
@@ -184,8 +214,8 @@ const CurrenciesView = () => {
                                 <TableCell sx={styles.table.head.content.cell} width={200}>
                                     Name
                                 </TableCell>
-                                <TableCell sx={styles.table.head.content.cell} width={150}>
-                                    Code
+                                <TableCell sx={{...styles.table.head.content.cell, paddingLeft: '26px' }} width={150}>
+                                    Icon
                                 </TableCell>
                                 <TableCell sx={{...styles.table.head.content.cell, paddingLeft: '40px' }} width={150}>
                                     Actions
@@ -197,7 +227,7 @@ const CurrenciesView = () => {
                 <Box sx={styles.table.body.wrapper}>
                     <Table>
                         <TableBody sx={styles.table.body.content.wrapper}>
-                            {currencies.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map(row => (
+                            {cardTypes.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map(row => (
                                 <TableRow sx={styles.table.body.content.row} key={row.name}>
                                     <TableCell sx={styles.table.body.content.cell} width={200}>
                                         {editing?.id === row.id
@@ -206,32 +236,35 @@ const CurrenciesView = () => {
                                                 autoFocus
                                                 name='name'
                                                 defaultValue={editing?.name}
-                                                onChange={handleEditingChange}
+                                                onChange={handleNameChange}
                                                 onKeyDown={e => handleEditingKeyDown(e.key, row)}
                                                 error={editingErrors.name}
-                                                helperText={editingErrors.name && CurrencyService.messages.invalidName}
+                                                helperText={editingErrors.name && CardTypeService.messages.invalidName}
                                             />
                                             : row.name
                                         }
                                     </TableCell>
                                     <TableCell sx={styles.table.body.content.cell} width={150}>
-                                        {editing?.id === row.id
-                                            ? <TextField
-                                                sx={styles.table.body.content.textField}
-                                                name='code'
-                                                defaultValue={editing?.code}
-                                                onChange={handleEditingChange}
-                                                onKeyDown={e => handleEditingKeyDown(e.key, row)}
-                                                error={editingErrors.code}
-                                                helperText={editingErrors.code && CurrencyService.messages.invalidCode}
+                                        <Box sx={styles.table.body.content.pictureWrapper}>
+                                            <Box
+                                                component='img'
+                                                src={`data:image/png;base64,${(editing?.id === row.id ? editing?.icon : row.icon)}`}
                                             />
-                                            : row.code
+                                        </Box>
+                                        {editing?.id === row.id &&
+                                            <IconButton
+                                                component='label'
+                                                sx={styles.table.body.content.iconWrapper}
+                                            >
+                                                <input hidden type='file' accept='image/*' onChange={handleIconUpload} />
+                                                <UploadIcon />
+                                            </IconButton>
                                         }
                                     </TableCell>
                                     <TableCell sx={styles.table.body.content.cell} width={150}>
                                         <IconButton
                                             sx={styles.table.body.content.iconWrapper}
-                                            disabled={editing?.id === row.id && (editingErrors.name || editingErrors.code)}
+                                            disabled={editing?.id === row.id && editingErrors.name}
                                             onClick={editing?.id === row.id
                                                 ? () => handleEditingAccept(row)
                                                 : () => handleEditIconClick(row)
@@ -257,7 +290,7 @@ const CurrenciesView = () => {
                 <TablePagination
                     sx={styles.table.pagination}
                     rowsPerPageOptions={[5, 10]}
-                    count={currencies.length}
+                    count={cardTypes.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -265,16 +298,16 @@ const CurrenciesView = () => {
                 />
             </Paper>
             {deleteAlertOptions.open &&
-                <DeleteCurrencyAlert
+                <DeleteCardTypeAlert
                     id={deleteAlertOptions.id!!}
                     onClose={handleDeleteAlertClose}
                 />
             }
             {newDialogOpen &&
-                <NewCurrencyDialog onClose={toggleNewDialog} />
+                <NewCardTypeDialog onClose={toggleNewDialog} />
             }
         </Box>
     );
 };
 
-export default CurrenciesView;
+export default CardTypesView;

@@ -4,7 +4,7 @@ import {
     ChevronRight as RightArrowIcon,
     ExpandMore as BottomArrowIcon,
 } from '@mui/icons-material';
-import Routes from '../../../properties/Routes';
+import { NavigationBarService } from '../../../services';
 
 import styles from './NavigationBarItem.styles';
 
@@ -41,7 +41,7 @@ const NavigationBarItem = ({ item, onSelect, expandedView }: Props) => {
 
     const handleSelect = () => {
         
-        const route = Routes.INDEX + item.name.toLowerCase();
+        const route = NavigationBarService.toPathPart(item.name)
         onSelect(route);
     };
 
@@ -51,7 +51,7 @@ const NavigationBarItem = ({ item, onSelect, expandedView }: Props) => {
             toggleItem();
         }
 
-        const route = Routes.INDEX + item.name.toLowerCase() + Routes.INDEX + nestedItem.name.toLowerCase();
+        const route = NavigationBarService.toPathPart(item.name) + NavigationBarService.toPathPart(nestedItem.name);
         onSelect(route);
     };
 

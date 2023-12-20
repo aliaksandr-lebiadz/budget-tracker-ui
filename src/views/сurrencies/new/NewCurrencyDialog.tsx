@@ -80,7 +80,7 @@ const NewCurrencyDialog = (props: Props) => {
         <Paper sx={styles.root} elevation={3}>
             <Box sx={styles.header.wrapper}>
                 <Typography sx={styles.header.text}>
-                    New Currency
+                    New currency
                 </Typography>
                 <IconButton sx={styles.header.closeIconWrapper} onClick={props.onClose}>
                     <CloseIcon fontSize='small' />

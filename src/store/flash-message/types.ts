@@ -1,5 +1,5 @@
 export enum FlashMessageAsyncActionType {
-    ADD = 'flashMessages/addFlashMessage',
+    ADD = 'flashMessages/add',
 };
 
 export enum FlashMessageType {

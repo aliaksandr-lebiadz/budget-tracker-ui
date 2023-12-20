@@ -4,6 +4,7 @@ import LoginView from './login';
 import SignUpView from './sign-up';
 import HomeView from './home';
 import CurrenciesView from './сurrencies';
+import CardTypesView from './card-types';
 import FlashMessagesView from './flash-message';
 import Routes from '../properties/Routes';
 import AuthenticatedPageLayout from '../layouts/authenticated/AuthenticatedPageLayout';
@@ -17,6 +18,7 @@ const App = () => (
             <Switch>
                 <Route path={Routes.INDEX} element={<AuthenticatedPageLayout />}>
                     <Route path={Routes.CURRENCIES} element={<CurrenciesView />} />
+                    <Route path={Routes.CARD_TYPES} element={<CardTypesView />} />
                     <Route path='/' element={<HomeView />} />
                 </Route>
                 <Route path={Routes.LOGIN} element={<LoginView />} />

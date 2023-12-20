@@ -5,6 +5,9 @@ enum Message {
     CURRENCY_ADDED_SUCCESS = 'Currency added successfully!',
     CURRENCY_CHANGED_SUCCESS = 'Currency changed successfully!',
     CURRENCY_DELETED_SUCCESS = 'Currency deleted successfully!',
+    CARD_TYPE_ADDED_SUCCESS = 'Card type added successfully!',
+    CARD_TYPE_CHANGED_SUCCESS = 'Card type changed successfully!',
+    CARD_TYPE_DELETED_SUCCESS = 'Card type deleted successfully!',
 };
 
 export default Message;

@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Divider, Typography } from '@mui/material';
-import Routes from '../../../properties/Routes';
+import styles from './NavigationBarSection.styles';
 import NavigationBarItem, { ItemProps } from '../item/NavigationBarItem';
 
-import styles from './NavigationBarSection.styles';
+import { NavigationBarService } from '../../../services';
 
 export interface SectionProps {
     name: string,
@@ -21,7 +21,7 @@ const NavigationBarSection = ({ section, expandedView }: Props) => {
 
     const handleSelect = (itemRoute: string) => {
 
-        const route = Routes.INDEX + section.name + itemRoute;
+        const route = NavigationBarService.toPathPart(section.name) + itemRoute;
         navigate(route);
     };
 

@@ -140,6 +140,14 @@ const styles = {
                     },
                 },
 
+                pictureWrapper: {
+                    width: '48px',
+                    height: '48px',
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+
                 textField: {
                     '.MuiOutlinedInput-root': {
                         '& fieldset': {

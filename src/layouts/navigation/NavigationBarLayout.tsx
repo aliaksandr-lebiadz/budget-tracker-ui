@@ -26,6 +26,7 @@ const sections = [
                 nestedItems: [
                     { name: 'Banks' },
                     { name: 'Currencies' },
+                    { name: 'Card types' },
                 ],
             },
             {

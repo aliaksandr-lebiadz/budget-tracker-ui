@@ -116,6 +116,47 @@ const styles = {
                 },
             },
         },
+
+        upload: {
+
+            wrapper: {
+                display: 'flex',
+                columnGap: '30px',
+                alignItems: 'center',
+                width: '220px',
+            },
+
+            pictureWrapper: (filled: boolean, error: boolean) => ({
+                width: '48px',
+                height: '48px',
+                border: `2px dashed ${filled ? Color.DARK_GREY : (error ? darken(Color.LIGHT_RED, 0.2) : darken(Color.WHITE, 0.6))}`,
+                display: 'inline-flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }),
+
+            button: {
+                display: 'flex',
+                columnGap: '10px',
+                color: darken(Color.WHITE, 0.1),
+                backgroundColor: darken(Color.LIGHT_GREEN, 0.1),
+                border: 'none',
+                textTransform: 'none',
+                width: '142px',
+                height: '36px',
+    
+                '&:hover': {
+                    border: 'none',
+                    backgroundColor: darken(Color.LIGHT_GREEN, 0.2),
+                },
+            },
+
+            text: {
+                fontFamily: FontFamily.RALEWAY,
+                fontWeight: FontWeight.SEMI_BOLD,
+                color: darken(Color.WHITE, 0.1),
+            },
+        }
     },
 
     actions: {

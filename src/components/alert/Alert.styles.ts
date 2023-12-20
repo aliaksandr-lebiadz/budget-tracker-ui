@@ -24,6 +24,8 @@ const styles = {
 
         text: {
             color: darken(Color.WHITE, 0.1),
+            fontFamily: FontFamily.RALEWAY,
+            fontWeight: FontWeight.REGULAR,
         },
     },
 

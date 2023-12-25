@@ -4,6 +4,7 @@ enum Routes {
     SIGN_UP = '/sign-up',
     CURRENCIES = '/management/admin/currencies',
     CARD_TYPES = '/management/admin/card-types',
+    BANKS = '/management/admin/banks',
 };
 
 export default Routes;

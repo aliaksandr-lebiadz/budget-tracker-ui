@@ -25,8 +25,8 @@ const sections = [
                 icon: <AdminIcon />,
                 nestedItems: [
                     { name: 'Banks' },
-                    { name: 'Currencies' },
                     { name: 'Card types' },
+                    { name: 'Currencies' },
                 ],
             },
             {

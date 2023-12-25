@@ -1,10 +1,10 @@
 import ValidationService from './ValidationService';
 
-class CardTypeService {
+class BankService {
 
     private static nameRules = {
-        minLength: 4,
-        maxLength: 64,
+        minLength: 3,
+        maxLength: 128,
     };
 
     private static iconRules = {
@@ -22,4 +22,4 @@ class CardTypeService {
     };
 };
 
-export default CardTypeService;
+export default BankService;

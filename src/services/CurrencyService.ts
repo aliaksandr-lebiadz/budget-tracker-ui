@@ -1,3 +1,5 @@
+import ValidationService from './ValidationService';
+
 class CurrencyService {
 
     private static nameRules = {
@@ -9,9 +11,9 @@ class CurrencyService {
         length: 3,
     };
 
-    static isNameValid = (name?: string) => name !== undefined && name.length >= this.nameRules.minLength && name.length <= this.nameRules.maxLength;
+    static isNameValid = (name?: string) => ValidationService.isIntervalLengthValid(this.nameRules.minLength, this.nameRules.maxLength, name);
 
-    static isCodeValid = (code?: string) => code !== undefined && code.length === this.codeRules.length;
+    static isCodeValid = (code?: string) => ValidationService.isPreciseLengthValid(this.codeRules.length, code);
 
     private static validationMethods = {
         name: this.isNameValid,
@@ -21,8 +23,8 @@ class CurrencyService {
     static isValid = (name: 'name' | 'code', value?: string) => this.validationMethods[name](value);
 
     static messages = {
-        invalidName: `Length should be from ${this.nameRules.minLength} to ${this.nameRules.maxLength}`,
-        invalidCode: `Length should equal to ${this.codeRules.length}`,
+        invalidName: ValidationService.asInvalidIntervalLengthMessage(this.nameRules.minLength, this.nameRules.maxLength),
+        invalidCode: ValidationService.asInvalidPreciseLengthMessage(this.codeRules.length),
     };
 };
 

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createCommonAsyncAction } from '../utils/actionUtils';
-import Message from '../../properties/Messages';
+import { ApiMessage } from '../../properties/api';
 import { SliceName } from '../../types/store';
 import { addCurrencyApi, changeCurrencyApi, deleteCurrencyByIdApi, getCurrenciesApi } from './currencyApi';
 import { NewCurrencyDto, CurrencyAsyncActionType, CurrencyDto, CurrencyState } from './types';
@@ -13,19 +13,19 @@ export const getCurrencies = createCommonAsyncAction<undefined, CurrencyDto[]>(
 export const addCurrency = createCommonAsyncAction<NewCurrencyDto, number>(
     CurrencyAsyncActionType.ADD,
     (currency) => addCurrencyApi(currency),
-    () => Message.CURRENCY_ADDED_SUCCESS,
+    () => ApiMessage.CURRENCY_ADDED_SUCCESS,
 );
 
 export const changeCurrency = createCommonAsyncAction<CurrencyDto, void>(
     CurrencyAsyncActionType.CHANGE,
     (currency) => changeCurrencyApi(currency),
-    () => Message.CURRENCY_CHANGED_SUCCESS,
+    () => ApiMessage.CURRENCY_CHANGED_SUCCESS,
 );
 
 export const deleteCurrencyById = createCommonAsyncAction<number, void>(
     CurrencyAsyncActionType.DELETE,
     (id) => deleteCurrencyByIdApi(id),
-    () => Message.CURRENCY_DELETED_SUCCESS,
+    () => ApiMessage.CURRENCY_DELETED_SUCCESS,
 );
 
 const initialState: CurrencyState = {

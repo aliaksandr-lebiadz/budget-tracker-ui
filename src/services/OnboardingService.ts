@@ -1,3 +1,5 @@
+import ValidationService from './ValidationService';
+
 class OnboardingService {
 
     private static usernameRules = {
@@ -10,9 +12,9 @@ class OnboardingService {
         maxLength: 32,
     };
 
-    static isUsernameValid = (username?: string) => username !== undefined && username.length >= this.usernameRules.minLength && username.length <= this.usernameRules.maxLength;
+    static isUsernameValid = (username?: string) => ValidationService.isIntervalLengthValid(this.usernameRules.minLength, this.usernameRules.maxLength, username);
 
-    static isPasswordValid = (password?: string) => password !== undefined && password.length >= this.passwordRules.minLength && password.length <= this.passwordRules.maxLength;
+    static isPasswordValid = (password?: string) => ValidationService.isIntervalLengthValid(this.passwordRules.minLength, this.passwordRules.maxLength, password);
 
     private static validationMethods = {
         username: this.isUsernameValid,
@@ -22,8 +24,8 @@ class OnboardingService {
     static isValid = (name: 'username' | 'password', value?: string) => this.validationMethods[name](value);
 
     static messages = {
-        invalidUsername: `Length should be from ${this.usernameRules.minLength} to ${this.usernameRules.maxLength}`,
-        invalidPassword: `Length should be from ${this.passwordRules.minLength} to ${this.passwordRules.maxLength}`,
+        invalidUsername: ValidationService.asInvalidIntervalLengthMessage(this.usernameRules.minLength, this.usernameRules.maxLength),
+        invalidPassword: ValidationService.asInvalidIntervalLengthMessage(this.passwordRules.minLength, this.passwordRules.maxLength),
     };
 };
 

@@ -38,6 +38,10 @@ interface Props<T extends HasId> {
 
 const EntityTable = <T extends HasId>(props: Props<T>) => {
 
+    const tableWidth = props.headerColumns
+        .map(column => column.width)
+        .reduce((sum, value) => sum + value, 0) + 5;
+
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -68,7 +72,7 @@ const EntityTable = <T extends HasId>(props: Props<T>) => {
                     </Box>
                 </Button>
             </Box>
-            <Paper sx={styles.table.wrapper} elevation={3}>
+            <Paper sx={{ ...styles.table.wrapper, width: tableWidth }} elevation={3}>
                 <Box>
                     <Table>
                         <TableHead sx={styles.table.head.content.wrapper}>

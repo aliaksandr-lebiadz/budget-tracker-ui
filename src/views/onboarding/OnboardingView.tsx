@@ -12,7 +12,7 @@ import {
     PersonOutlineOutlined as UsernameIcon,
     LockOutlined as PasswordIcon,
 } from '@mui/icons-material';
-import OnboardingService from '../../services/OnboardingService';
+import { OnboardingService } from '../../services';
 
 import styles from './OnboardingView.styles';
 

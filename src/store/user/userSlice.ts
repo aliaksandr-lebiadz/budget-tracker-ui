@@ -2,8 +2,8 @@ import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { createCommonAsyncAction } from '../utils/actionUtils';
 import { decodeToken } from '../../utils/jwtUtils';
 import { TOKENS_LIFETIME } from '../../properties/Properties';
-import LocalStorageItem from '../../properties/LocalStorageItem';
-import Message from '../../properties/Messages';
+import { LocalStorageItem } from '../../properties';
+import { ApiMessage } from '../../properties/api';
 import { SliceName } from '../../types/store';
 import { loginApi, signUpApi } from './userApi';
 import { UserAsyncActionType, UserCredentialsDto, UserState, UserTokensDto } from './types';
@@ -11,19 +11,19 @@ import { UserAsyncActionType, UserCredentialsDto, UserState, UserTokensDto } fro
 export const login = createCommonAsyncAction<UserCredentialsDto, UserTokensDto>(
     UserAsyncActionType.LOGIN,
     (credentials) => loginApi(credentials),
-    () => Message.LOGIN_SUCCESS,
+    () => ApiMessage.LOGIN_SUCCESS,
 );
 
 export const loginAndRemember = createCommonAsyncAction<UserCredentialsDto, UserTokensDto>(
     UserAsyncActionType.LOGIN_AND_REMEMBER,
     (credentials) => loginApi(credentials),
-    () => Message.LOGIN_SUCCESS,
+    () => ApiMessage.LOGIN_SUCCESS,
 );
 
 export const signUp = createCommonAsyncAction<UserCredentialsDto, void>(
     UserAsyncActionType.SIGN_UP,
     (credentials) => signUpApi(credentials),
-    () => Message.SIGN_UP_SUCCESS,
+    () => ApiMessage.SIGN_UP_SUCCESS,
 );
 
 const userSlice = createSlice({

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createCommonAsyncAction } from '../utils/actionUtils';
-import Message from '../../properties/Messages';
+import { ApiMessage } from '../../properties/api';
 import { SliceName } from '../../types/store';
 import { addCardTypeApi, changeCardTypeApi, deleteCardTypeByIdApi, getCardTypesApi } from './cardTypeApi';
 import { NewCardTypeDto, CardTypeAsyncActionType, CardTypeDto, CardTypeState } from './types';
@@ -13,19 +13,19 @@ export const getCardTypes = createCommonAsyncAction<undefined, CardTypeDto[]>(
 export const addCardType = createCommonAsyncAction<NewCardTypeDto, number>(
     CardTypeAsyncActionType.ADD,
     (cardType) => addCardTypeApi(cardType),
-    () => Message.CARD_TYPE_ADDED_SUCCESS,
+    () => ApiMessage.CARD_TYPE_ADDED_SUCCESS,
 );
 
 export const changeCardType = createCommonAsyncAction<CardTypeDto, void>(
     CardTypeAsyncActionType.CHANGE,
     (cardType) => changeCardTypeApi(cardType),
-    () => Message.CARD_TYPE_CHANGED_SUCCESS,
+    () => ApiMessage.CARD_TYPE_CHANGED_SUCCESS,
 );
 
 export const deleteCardTypeById = createCommonAsyncAction<number, void>(
     CardTypeAsyncActionType.DELETE,
     (id) => deleteCardTypeByIdApi(id),
-    () => Message.CARD_TYPE_DELETED_SUCCESS,
+    () => ApiMessage.CARD_TYPE_DELETED_SUCCESS,
 );
 
 const initialState: CardTypeState = {

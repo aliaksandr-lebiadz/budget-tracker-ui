@@ -70,7 +70,6 @@ const styles = {
         wrapper: {
             backgroundColor: Color.DARK_BLUE,
             borderRadius: '10px',
-            width: '500px',
             overflow: 'hidden',
             minHeight: '474px',
         },

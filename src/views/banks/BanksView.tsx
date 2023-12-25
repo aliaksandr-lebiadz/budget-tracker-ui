@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { usePrevious } from '../../hooks';
-import { changeCardType, getCardTypes } from '../../store/card-type/cardTypeSlice';
-import { CardTypeDto } from '../../store/card-type/types';
-import { CardTypeService } from '../../services';
+import { changeBank, getBanks } from '../../store/bank/bankSlice';
+import { BankDto } from '../../store/bank/types';
+import { BankService } from '../../services';
 
 import {
     EntityTable,
@@ -11,8 +11,8 @@ import {
     EntityTableIconCell,
     EntityTableActionsCell,
 } from '../../components/entity/table';
-import NewCardTypeDialog from './new/NewCardTypeDialog';
-import DeleteCardTypeAlert from './alert/DeleteCardTypeAlert';
+import NewBankDialog from './new/NewBankDialog';
+import DeleteBankAlert from './alert/DeleteBankAlert';
 
 interface DeleteAlertOptions {
     open: boolean,
@@ -28,8 +28,8 @@ const CardTypesView = () => {
 
     const dispatch = useAppDispatch();
 
-    const loading = useAppSelector((state) => state.cardTypes.loading);
-    const cardTypes = useAppSelector((state) => state.cardTypes.data);
+    const loading = useAppSelector((state) => state.banks.loading);
+    const banks = useAppSelector((state) => state.banks.data);
     const previousLoading = usePrevious(loading);
 
     const [deleteAlertOptions, setDeleteAlertOptions] = useState<DeleteAlertOptions>({
@@ -38,12 +38,12 @@ const CardTypesView = () => {
     });
     const [newDialogOpen, setNewDialogOpen] = useState(false);
 
-    const [editing, setEditing] = useState<CardTypeDto>();
+    const [editing, setEditing] = useState<BankDto>();
     const [editingErrors, setEditingErrors] = useState(editingErrorsInitialState);
 
     useEffect(() => {
 
-        dispatch(getCardTypes());
+        dispatch(getBanks());
     }, [dispatch]);
 
     useEffect(() => {
@@ -105,22 +105,22 @@ const CardTypesView = () => {
         }));
     };
 
-    const handleEditingAccept = (row: CardTypeDto) => {
+    const handleEditingAccept = (row: BankDto) => {
         
-        const nameValid = CardTypeService.isNameValid(editing?.name);
+        const nameValid = BankService.isNameValid(editing?.name);
         if (!nameValid) {
             setEditingErrors({
                 name: !nameValid,
                 show: true,
             });
         } else if (editing?.name !== row.name || editing?.icon !== row.icon) {
-            dispatch(changeCardType(editing!));
+            dispatch(changeBank(editing!));
         } else {
             handleCloseIconClick();
         }
     };
 
-    const handleEditIconClick = (row: CardTypeDto) => {
+    const handleEditIconClick = (row: BankDto) => {
 
         setEditing(row);
     };
@@ -139,9 +139,9 @@ const CardTypesView = () => {
     return (
         <>
             <EntityTable
-                title='Card Types'
+                title='Banks'
                 loading={loading.get}
-                data={cardTypes}
+                data={banks}
                 headerColumns={[
                     {
                         title: 'Name',
@@ -168,7 +168,7 @@ const CardTypesView = () => {
                                 autoFocus: true,
                                 defaultValue: editing?.name,
                                 error: editingErrors.name,
-                                errorMessage: CardTypeService.messages.invalidName,
+                                errorMessage: BankService.messages.invalidName,
 
                                 onChange: handleNameChange,
                                 onEnterKeyDown: () => handleEditingAccept(row),
@@ -183,9 +183,9 @@ const CardTypesView = () => {
                             editing={editing?.id === row.id}
                             editingProps={{
                                 defaultValue: editing?.icon,
-                                errorMessage: CardTypeService.messages.invalidIcon,
+                                errorMessage: BankService.messages.invalidIcon,
 
-                                isValid: CardTypeService.isIconValid,
+                                isValid: BankService.isIconValid,
                                 onChange: handleIconChange,
                             }}
                             regularProps={{
@@ -210,13 +210,13 @@ const CardTypesView = () => {
                 onAddButtonClick={toggleNewDialog}
             />
             {deleteAlertOptions.open &&
-                <DeleteCardTypeAlert
+                <DeleteBankAlert
                     id={deleteAlertOptions.id!}
                     onClose={handleDeleteAlertClose}
                 />
             }
             {newDialogOpen &&
-                <NewCardTypeDialog onClose={toggleNewDialog}/>
+                <NewBankDialog onClose={toggleNewDialog}/>
             }
         </>
     );

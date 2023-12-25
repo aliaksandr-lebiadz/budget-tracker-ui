@@ -6,7 +6,7 @@ import { addFlashMessage } from '../store/flash-message/flashMessageSlice';
 import Routes from '../properties/Routes';
 import LocalStorageItems from '../properties/LocalStorageItem';
 import { TOKENS_LIFETIME } from '../properties/Properties';
-import Message from '../properties/Messages';
+import { ApiMessage } from '../properties/api';
 import { RootState } from '../store/store';
 import { FlashMessageType } from '../store/flash-message/types';
 
@@ -64,7 +64,7 @@ export const checkTokensExpiration = (store: any) => {
             store.dispatch(addFlashMessage({
                 id: nextId(),
                 type: FlashMessageType.INFO,
-                message: Message.AUTO_LOG_OUT,
+                message: ApiMessage.AUTO_LOG_OUT,
             }));
         } else {
             localStorage.setItem(LocalStorageItems.TOKENS_EXPIRE_AT, (Date.now() + TOKENS_LIFETIME).toString());

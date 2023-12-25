@@ -3,7 +3,6 @@ import FontFamily from './FontFamily';
 import FontWeight from './FontWeight';
 import KeyboardKeys from './KeyboardKeys';
 import LocalStorageItem from './LocalStorageItem';
-import Messages from './Messages';
 import Routes from './Routes';
 
 export {
@@ -13,6 +12,5 @@ export {
     FontWeight,
     KeyboardKeys,
     LocalStorageItem,
-    Messages,
     Routes,
 };

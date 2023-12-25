@@ -5,9 +5,11 @@ import { changeCurrency, getCurrencies } from '../../store/currency/currencySlic
 import { CurrencyDto } from '../../store/currency/types';
 import { CurrencyService } from '../../services';
 
-import EntityTable from '../../components/entity/table/EntityTable';
-import EntityTableTextCell from '../../components/entity/table/cell/EntityTableTextCell';
-import EntityTableActionsCell from '../../components/entity/table/cell/EntityTableActionsCell';
+import {
+    EntityTable,
+    EntityTableTextCell,
+    EntityTableActionsCell,
+} from '../../components/entity/table';
 import DeleteCurrencyAlert from './delete/DeleteCurrencyAlert';
 import NewCurrencyDialog from './new/NewCurrencyDialog';
 

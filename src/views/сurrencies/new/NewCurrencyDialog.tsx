@@ -3,8 +3,7 @@ import { useAppDispatch } from '../../../store/store';
 import { addCurrency } from '../../../store/currency/currencySlice';
 import { CurrencyService } from '../../../services';
 
-import NewEntityDialog from '../../../components/entity/new/NewEntityDialog';
-import NewEntityDialogTextField from '../../../components/entity/new/field/NewEntityDialogTextField';
+import { NewEntityDialog, NewEntityDialogTextField } from '../../../components/entity/new';
 
 interface Props {
     onClose: () => void,

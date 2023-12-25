@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAppDispatch } from '../../../store/store';
-import { addCardType } from '../../../store/card-type/cardTypeSlice';
-import { CardTypeService } from '../../../services';
+import { addBank } from '../../../store/bank/bankSlice';
+import { BankService } from '../../../services';
 
 import {
     NewEntityDialog,
@@ -30,7 +30,7 @@ interface ErrorsState {
     show: boolean,
 };
 
-const NewCardTypeDialog = (props: Props) => {
+const NewBankDialog = (props: Props) => {
 
     const dispatch = useAppDispatch();
 
@@ -46,7 +46,7 @@ const NewCardTypeDialog = (props: Props) => {
         }));
         setErrors(previousErrors => ({
             ...previousErrors,
-            name: previousErrors.show ? !CardTypeService.isNameValid(value) : previousErrors.name,
+            name: previousErrors.show ? !BankService.isNameValid(value) : previousErrors.name,
         }));
     };
 
@@ -66,7 +66,7 @@ const NewCardTypeDialog = (props: Props) => {
         
         e.preventDefault();
 
-        const nameValid = CardTypeService.isNameValid(fields.name);
+        const nameValid = BankService.isNameValid(fields.name);
         const iconValid = fields.icon !== undefined;
         if (!nameValid || !iconValid) {
             setErrors({
@@ -75,7 +75,7 @@ const NewCardTypeDialog = (props: Props) => {
                 show: true,
             });
         } else {
-            dispatch(addCardType({
+            dispatch(addBank({
                 name: fields.name!,
                 icon: fields.icon!,
             }));
@@ -84,7 +84,7 @@ const NewCardTypeDialog = (props: Props) => {
 
     return (
         <NewEntityDialog
-            title='New card type'
+            title='New bank'
             fields={
                 <>
                     <NewEntityDialogTextField
@@ -92,15 +92,15 @@ const NewCardTypeDialog = (props: Props) => {
                         name='name'
                         autoFocus
                         error={errors.name}
-                        errorMessage={CardTypeService.messages.invalidName}
+                        errorMessage={BankService.messages.invalidName}
                         onChange={handleNameChange}
                     />
                     <NewEntityDialogIconField
                         label='Icon'
                         value={fields.icon}
                         error={errors.icon}
-                        errorMessage={CardTypeService.messages.invalidIcon}
-                        isValid={CardTypeService.isIconValid}
+                        errorMessage={BankService.messages.invalidIcon}
+                        isValid={BankService.isIconValid}
                         onChange={handleIconChange}
                     />
                 </>
@@ -111,4 +111,4 @@ const NewCardTypeDialog = (props: Props) => {
     );
 };
 
-export default NewCardTypeDialog;
+export default NewBankDialog;

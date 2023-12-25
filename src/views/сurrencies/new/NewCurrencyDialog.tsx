@@ -1,18 +1,10 @@
 import { useState } from 'react';
-import {
-    Box,
-    Button,
-    IconButton,
-    Paper,
-    TextField,
-    Typography,
-} from '@mui/material';
-import { CloseRounded as CloseIcon } from '@mui/icons-material';
 import { useAppDispatch } from '../../../store/store';
-import { CurrencyService } from '../../../services';
 import { addCurrency } from '../../../store/currency/currencySlice';
+import { CurrencyService } from '../../../services';
 
-import styles from './NewCurrencyDialog.styles';
+import NewEntityDialog from '../../../components/entity/new/NewEntityDialog';
+import NewEntityDialogTextField from '../../../components/entity/new/field/NewEntityDialogTextField';
 
 interface Props {
     onClose: () => void,
@@ -29,17 +21,17 @@ interface ErrorsState {
     show: boolean,
 };
 
+const errorsInitialState = {
+    name: false,
+    code: false,
+    show: false,
+};
+
 const NewCurrencyDialog = (props: Props) => {
 
     const dispatch = useAppDispatch();
 
     const [fields, setFields] = useState<FieldsState>({});
-    
-    const errorsInitialState = {
-        name: false,
-        code: false,
-        show: false,
-    };
     const [errors, setErrors] = useState<ErrorsState>(errorsInitialState);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,47 +69,30 @@ const NewCurrencyDialog = (props: Props) => {
     };
 
     return (
-        <Paper sx={styles.root} elevation={3}>
-            <Box sx={styles.header.wrapper}>
-                <Typography sx={styles.header.text}>
-                    New currency
-                </Typography>
-                <IconButton sx={styles.header.closeIconWrapper} onClick={props.onClose}>
-                    <CloseIcon fontSize='small' />
-                </IconButton>
-            </Box>
-            <Box sx={styles.content.wrapper} component='form' onSubmit={handleSubmit}>
-                <Box sx={styles.content.textField.wrapper}>
-                    <Typography sx={styles.content.textField.label}>Name: </Typography>
-                    <TextField
-                        sx={styles.content.textField.input}
-                        autoFocus
+        <NewEntityDialog
+            title='New currency'
+            fields={
+                <>
+                    <NewEntityDialogTextField
+                        label='Name'
                         name='name'
-                        onChange={handleInputChange}
+                        autoFocus
                         error={errors.name}
-                        helperText={errors.name && CurrencyService.messages.invalidName}
-                    />
-                </Box>
-                <Box sx={styles.content.textField.wrapper}>
-                    <Typography sx={styles.content.textField.label}>Code: </Typography>
-                    <TextField
-                        sx={styles.content.textField.input}
-                        name='code'
+                        errorMessage={CurrencyService.messages.invalidName}
                         onChange={handleInputChange}
-                        error={errors.code}
-                        helperText={errors.code && CurrencyService.messages.invalidCode}
                     />
-                </Box>
-                <Box sx={styles.actions.wrapper}>
-                    <Button sx={styles.actions.cancelButton} onClick={props.onClose}>
-                        Cancel
-                    </Button>
-                    <Button sx={styles.actions.confirmButton} type='submit'>
-                        Create
-                    </Button>
-                </Box>
-            </Box>
-        </Paper>
+                    <NewEntityDialogTextField
+                        label='Code'
+                        name='code'
+                        error={errors.code}
+                        errorMessage={CurrencyService.messages.invalidCode}
+                        onChange={handleInputChange}
+                    />
+                </>
+            }
+            onClose={props.onClose}
+            onSubmit={handleSubmit}
+        />
     );
 };
 

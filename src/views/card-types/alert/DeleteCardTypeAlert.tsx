@@ -1,13 +1,14 @@
 import { Typography } from '@mui/material';
 import { useAppDispatch } from '../../../store/store';
+import { deleteCardTypeById } from '../../../store/card-type/cardTypeSlice';
 
-import Alert from '../../../components/alert/Alert';
+import DeleteEntityAlert from '../../../components/entity/alert/DeleteEntityAlert';
 
 import styles from './DeleteCardTypeAlert.styles';
-import { deleteCardTypeById } from '../../../store/card-type/cardTypeSlice';
 
 interface Props {
     id: number,
+
     onClose: () => void
 };
 
@@ -21,15 +22,12 @@ const DeleteCardTypeAlert = (props: Props) => {
     };
 
     return (
-        <Alert
-            title='Are you sure?'
+        <DeleteEntityAlert
             content={
                 <Typography sx={styles.text}>
                     Following accounts will be deleted, because they are using this card type:
                 </Typography>
             }
-            closeButtonTitle='Close'
-            confirmButtonTitle='Delete'
             onClose={props.onClose}
             onConfirm={handleConfirm}
         />

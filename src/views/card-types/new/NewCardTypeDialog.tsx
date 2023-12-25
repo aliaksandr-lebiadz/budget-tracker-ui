@@ -1,21 +1,17 @@
 import { useState } from 'react';
-import {
-    Box,
-    Button,
-    IconButton,
-    Paper,
-    TextField,
-    Typography,
-} from '@mui/material';
-import { CloseRounded as CloseIcon, FileUploadOutlined as UploadIcon } from '@mui/icons-material';
-import nextId from 'react-id-generator';
 import { useAppDispatch } from '../../../store/store';
 import { addCardType } from '../../../store/card-type/cardTypeSlice';
-import { addFlashMessage } from '../../../store/flash-message/flashMessageSlice';
-import { FlashMessageType } from '../../../store/flash-message/types';
 import CardTypeService from '../../../services/CardTypeService';
 
-import styles from './NewCardTypeDialog.styles';
+import NewEntityDialog from '../../../components/entity/new/NewEntityDialog';
+import NewEntityDialogTextField from '../../../components/entity/new/field/NewEntityDialogTextField';
+import NewEntityDialogIconField from '../../../components/entity/new/field/NewEntityDialogIconField';
+
+const errorsInitialState = {
+    name: false,
+    icon: false,
+    show: false,
+};
 
 interface Props {
     onClose: () => void,
@@ -37,12 +33,6 @@ const NewCardTypeDialog = (props: Props) => {
     const dispatch = useAppDispatch();
 
     const [fields, setFields] = useState<FieldsState>({});
-    
-    const errorsInitialState = {
-        name: false,
-        icon: false,
-        show: false,
-    };
     const [errors, setErrors] = useState<ErrorsState>(errorsInitialState);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,37 +48,16 @@ const NewCardTypeDialog = (props: Props) => {
         }));
     };
 
-    const handleIconUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleIconChange = (value: string) => {
 
-        const image = new Image();
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            reader.onload = () => {
-                image.src = reader.result?.toString()!!;
-            };
-
-            image.onload = () => {
-                if (CardTypeService.isIconValid(image.width, image.height)) {
-                    setFields(previousState => ({
-                        ...previousState!,
-                        icon: image.src.substring(image.src.indexOf('base64') + 'base64'.length + 1),
-                    }));
-                    setErrors(previousErrors => ({
-                        ...previousErrors,
-                        icon: false,
-                    }));
-                } else {
-                    dispatch(addFlashMessage({
-                        id: nextId(),
-                        type: FlashMessageType.ERROR,
-                        message: CardTypeService.messages.invalidIcon,
-                    }));
-                }
-            }
-        }
+        setFields(previousState => ({
+            ...previousState!,
+            icon: value,
+        }));
+        setErrors(previousErrors => ({
+            ...previousErrors,
+            icon: false,
+        }));
     };
 
     const handleSubmit: React.FormEventHandler<HTMLDivElement> = (e: React.FormEvent<HTMLDivElement>) => {
@@ -112,55 +81,31 @@ const NewCardTypeDialog = (props: Props) => {
     };
 
     return (
-        <Paper sx={styles.root} elevation={3}>
-            <Box sx={styles.header.wrapper}>
-                <Typography sx={styles.header.text}>
-                    New card type
-                </Typography>
-                <IconButton sx={styles.header.closeIconWrapper} onClick={props.onClose}>
-                    <CloseIcon fontSize='small' />
-                </IconButton>
-            </Box>
-            <Box sx={styles.content.wrapper} component='form' onSubmit={handleSubmit}>
-                <Box sx={styles.content.textField.wrapper}>
-                    <Typography sx={styles.content.textField.label}>Name:</Typography>
-                    <TextField
-                        sx={styles.content.textField.input}
-                        autoFocus
+        <NewEntityDialog
+            title='New card type'
+            fields={
+                <>
+                    <NewEntityDialogTextField
+                        label='Name'
                         name='name'
-                        onChange={handleNameChange}
+                        autoFocus
                         error={errors.name}
-                        helperText={errors.name && CardTypeService.messages.invalidName}
+                        errorMessage={CardTypeService.messages.invalidName}
+                        onChange={handleNameChange}
                     />
-                </Box>
-                <Box sx={styles.content.textField.wrapper}>
-                    <Typography sx={styles.content.textField.label}>Icon:</Typography>
-                    <Box sx={styles.content.upload.wrapper}>
-                        <Box sx={styles.content.upload.pictureWrapper(fields.icon !== undefined, errors.icon)}>
-                            {fields.icon && 
-                                <Box
-                                    component='img'
-                                    src={`data:image/png;base64,${fields.icon}`}
-                                />
-                            } 
-                        </Box>
-                        <Button component='label' sx={styles.content.upload.button}>
-                            <input hidden type='file' accept='image/*' onChange={handleIconUpload} />
-                            <Typography sx={styles.content.upload.text}>Upload</Typography>
-                            <UploadIcon />
-                        </Button>
-                    </Box>
-                </Box>
-                <Box sx={styles.actions.wrapper}>
-                    <Button sx={styles.actions.cancelButton} onClick={props.onClose}>
-                        Cancel
-                    </Button>
-                    <Button sx={styles.actions.confirmButton} type='submit'>
-                        Create
-                    </Button>
-                </Box>
-            </Box>
-        </Paper>
+                    <NewEntityDialogIconField
+                        label='Icon'
+                        value={fields.icon}
+                        error={errors.icon}
+                        errorMessage={CardTypeService.messages.invalidIcon}
+                        isValid={CardTypeService.isIconValid}
+                        onChange={handleIconChange}
+                    />
+                </>
+            }
+            onClose={props.onClose}
+            onSubmit={handleSubmit}
+        />
     );
 };
 

@@ -53,69 +53,6 @@ const styles = {
             rowGap: '30px',
             padding: '20px 20px',
         },
-
-        textField: {
-
-            wrapper: {
-                display: 'flex',
-                columnGap: '20px',
-                alignItems: 'center',
-            },
-
-            label: {
-                color: darken(Color.WHITE, 0.1),
-                fontFamily: FontFamily.RALEWAY,
-                fontWeight: FontWeight.SEMI_BOLD,
-                width: '50px',
-                textAlign: 'right',
-            },
-
-            input: {
-                '.MuiOutlinedInput-root': {
-                    '& fieldset': {
-                        borderColor: darken(Color.WHITE, 0.6),
-                    },
-                    '&:hover fieldset': {
-                        borderColor: darken(Color.WHITE, 0.6),
-                    },
-                    '&.Mui-focused fieldset': {
-                        borderColor: darken(Color.WHITE, 0.4),
-                    },
-                },
-        
-                '.Mui-error': {
-                    '& fieldset': {
-                        borderColor: `${darken(Color.LIGHT_RED, 0.3)} !important`,
-                    },
-                    '&:hover fieldset': {
-                        borderColor: darken(Color.LIGHT_RED, 0.3),
-                    },
-                    '&.Mui-focused fieldset': {
-                        borderColor: darken(Color.LIGHT_RED, 0.2),
-                    },
-                },
-        
-                '.MuiFormHelperText-root': {
-                    position: 'absolute',
-                    top: '37px',
-                    color: darken(Color.LIGHT_RED, 0.2),
-                    fontFamily: FontFamily.RALEWAY,
-                    fontWeight: FontWeight.SEMI_BOLD,
-                    backgroundColor: darken(TransparentColor.GREY, 0.4),
-                    margin: '5px 0px 0px 0px',
-                    paddingLeft: '10px',
-                    borderRadius: '4px',
-                    lineHeight: 1.3,
-                    padding: '3px 8px',
-                    width: '100%',
-                },
-        
-                input: {
-                    color: darken(Color.WHITE, 0.2),
-                    padding: '7px 14px',
-                },
-            },
-        },
     },
 
     actions: {

@@ -1,64 +1,42 @@
 import { useEffect, useState } from 'react';
-import {
-    Box,
-    Button,
-    IconButton,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TablePagination,
-    TableRow,
-    TextField,
-    Typography,
-} from '@mui/material';
-import {
-    DeleteRounded as DeleteIcon,
-    EditRounded as EditIcon,
-    AddRounded as AddIcon,
-    CloseRounded as CloseIcon,
-    CheckRounded as AcceptIcon,
-} from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../store/store';
+import { usePrevious } from '../../hooks';
 import { changeCurrency, getCurrencies } from '../../store/currency/currencySlice';
-import { CurrencyService } from '../../services';
-import KeyboardKeys from '../../properties/KeyboardKeys';
 import { CurrencyDto } from '../../store/currency/types';
+import { CurrencyService } from '../../services';
 
-import Loading from '../../components/loading/Loading';
+import EntityTable from '../../components/entity/table/EntityTable';
+import EntityTableTextCell from '../../components/entity/table/cell/EntityTableTextCell';
+import EntityTableActionsCell from '../../components/entity/table/cell/EntityTableActionsCell';
 import DeleteCurrencyAlert from './delete/DeleteCurrencyAlert';
 import NewCurrencyDialog from './new/NewCurrencyDialog';
-
-import styles from './CurrenciesView.styles';
-import { usePrevious } from '../../hooks';
 
 interface DeleteAlertOptions {
     open: boolean,
     id: number | null,
 };
 
+const editingErrorsInitialState = {
+    name: false,
+    code: false,
+    show: false,
+};
+
 const CurrenciesView = () => {
 
     const dispatch = useAppDispatch();
-    const currencies = useAppSelector((state) => state.currencies.data);
+
     const loading = useAppSelector((state) => state.currencies.loading);
+    const currencies = useAppSelector((state) => state.currencies.data);
     const previousLoading = usePrevious(loading);
 
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
     const [deleteAlertOptions, setDeleteAlertOptions] = useState<DeleteAlertOptions>({
         open: false,
         id: null,
     });
     const [newDialogOpen, setNewDialogOpen] = useState(false);
+
     const [editing, setEditing] = useState<CurrencyDto>();
-    
-    const editingErrorsInitialState = {
-        name: false,
-        code: false,
-        show: false,
-    };
     const [editingErrors, setEditingErrors] = useState(editingErrorsInitialState);
 
     useEffect(() => {
@@ -67,26 +45,25 @@ const CurrenciesView = () => {
     }, [dispatch]);
 
     useEffect(() => {
-
+        
         if (previousLoading.add && !loading.add) {
             toggleNewDialog();
-        } else if (previousLoading.change && !loading.change) {
+        }
+    }, [loading.add, previousLoading.add]);
+
+    useEffect(() => {
+        
+        if (previousLoading.change && !loading.change) {
             handleCloseIconClick();
-        } else if (previousLoading.delete && !loading.delete) {
+        }
+    }, [loading.change, previousLoading.change]);
+
+    useEffect(() => {
+        
+        if (previousLoading.delete && !loading.delete) {
             handleDeleteAlertClose();
         }
-    }, [loading, previousLoading])
-
-    const handleChangePage = (event: any, newPage: number) => {
-
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-        setRowsPerPage(Number(event.target.value));
-        setPage(0);
-    };
+    }, [loading.delete, previousLoading.delete]);
 
     const handleDeleteIconClick = (id: number) => {
 
@@ -102,7 +79,7 @@ const CurrenciesView = () => {
             open: false,
             id: null,
         });
-    }
+    };
 
     const handleEditIconClick = (row: CurrencyDto) => {
 
@@ -115,7 +92,7 @@ const CurrenciesView = () => {
         setEditingErrors(editingErrorsInitialState);
     };
 
-    const handleEditingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const { name, value } = e.target;
         setEditing(previousState => ({
@@ -127,15 +104,6 @@ const CurrenciesView = () => {
             //@ts-ignore
             [name]: previousErrors.show ? !CurrencyService.isValid(name, value) : previousErrors[name],
         }));
-    };
-
-    const handleEditingKeyDown = (key: string, row: CurrencyDto) => {
-
-        if (key === KeyboardKeys.ENTER) {
-            handleEditingAccept(row);
-        } else if (key === KeyboardKeys.ESCAPE) {
-            handleCloseIconClick();
-        }
     };
 
     const handleEditingAccept = (row: CurrencyDto) => {
@@ -157,123 +125,94 @@ const CurrenciesView = () => {
 
     const toggleNewDialog = () => {
 
-        setNewDialogOpen(!newDialogOpen);
+        setNewDialogOpen(previousOpen => !previousOpen);
     };
 
     return (
-        <Box sx={styles.root}>
-            <Box sx={styles.header.wrapper}>
-                <Typography sx={styles.header.title}>
-                    Currencies
-                </Typography>
-                {loading.get && <Loading />}
-                <Button sx={styles.header.button.wrapper} variant='contained' onClick={toggleNewDialog}>
-                    <Typography sx={styles.header.button.text}>
-                        Add
-                    </Typography>
-                    <Box sx={styles.header.button.iconWrapper}>
-                        <AddIcon />
-                    </Box>
-                </Button>
-            </Box>
-            <Paper sx={styles.table.wrapper} elevation={3}>
-                <Box>
-                    <Table>
-                        <TableHead sx={styles.table.head.content.wrapper}>
-                            <TableRow>
-                                <TableCell sx={styles.table.head.content.cell} width={200}>
-                                    Name
-                                </TableCell>
-                                <TableCell sx={styles.table.head.content.cell} width={150}>
-                                    Code
-                                </TableCell>
-                                <TableCell sx={{...styles.table.head.content.cell, paddingLeft: '40px' }} width={150}>
-                                    Actions
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                    </Table>
-                </Box>
-                <Box sx={styles.table.body.wrapper}>
-                    <Table>
-                        <TableBody sx={styles.table.body.content.wrapper}>
-                            {currencies.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map(row => (
-                                <TableRow sx={styles.table.body.content.row} key={row.name}>
-                                    <TableCell sx={styles.table.body.content.cell} width={200}>
-                                        {editing?.id === row.id
-                                            ? <TextField
-                                                sx={styles.table.body.content.textField}
-                                                autoFocus
-                                                name='name'
-                                                defaultValue={editing?.name}
-                                                onChange={handleEditingChange}
-                                                onKeyDown={e => handleEditingKeyDown(e.key, row)}
-                                                error={editingErrors.name}
-                                                helperText={editingErrors.name && CurrencyService.messages.invalidName}
-                                            />
-                                            : row.name
-                                        }
-                                    </TableCell>
-                                    <TableCell sx={styles.table.body.content.cell} width={150}>
-                                        {editing?.id === row.id
-                                            ? <TextField
-                                                sx={styles.table.body.content.textField}
-                                                name='code'
-                                                defaultValue={editing?.code}
-                                                onChange={handleEditingChange}
-                                                onKeyDown={e => handleEditingKeyDown(e.key, row)}
-                                                error={editingErrors.code}
-                                                helperText={editingErrors.code && CurrencyService.messages.invalidCode}
-                                            />
-                                            : row.code
-                                        }
-                                    </TableCell>
-                                    <TableCell sx={styles.table.body.content.cell} width={150}>
-                                        <IconButton
-                                            sx={styles.table.body.content.iconWrapper}
-                                            disabled={editing?.id === row.id && (editingErrors.name || editingErrors.code)}
-                                            onClick={editing?.id === row.id
-                                                ? () => handleEditingAccept(row)
-                                                : () => handleEditIconClick(row)
-                                            }
-                                        >
-                                            {editing?.id === row.id ? <AcceptIcon /> : <EditIcon />}
-                                        </IconButton>
-                                        <IconButton
-                                            sx={styles.table.body.content.iconWrapper}
-                                            onClick={editing?.id === row.id
-                                                ? () => handleCloseIconClick()
-                                                : () => handleDeleteIconClick(row.id)
-                                            }
-                                        >
-                                            {editing?.id === row.id ? <CloseIcon /> : <DeleteIcon/>}
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Box>
-                <TablePagination
-                    sx={styles.table.pagination}
-                    rowsPerPageOptions={[5, 10]}
-                    count={currencies.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+        <>
+            <EntityTable
+                title='Currencies'
+                loading={loading.get}
+                data={currencies}
+                headerColumns={[
+                    {
+                        title: 'Name',
+                        width: 200,
+                    },
+                    {
+                        title: 'Code',
+                        width: 150,
+                    },
+                    {
+                        title: 'Actions',
+                        width: 150,
+                        styles: { paddingLeft: '40px' },
+                    }
+                ]}
+                generateBodyRow={(row) => (
+                    <>
+                        <EntityTableTextCell
+                            width={200}
+                            editing={editing?.id === row.id}
+                            editingProps={{
+                                name: 'name',
+                                autoFocus: true,
+                                defaultValue: editing?.name,
+                                error: editingErrors.name,
+                                errorMessage: CurrencyService.messages.invalidName,
+
+                                onChange: handleFieldChange,
+                                onEnterKeyDown: () => handleEditingAccept(row),
+                                onEscapeKeyDown: handleCloseIconClick,
+                            }}
+                            regularProps={{
+                                value: row.name,
+                            }}
+                        />
+                        <EntityTableTextCell
+                            width={150}
+                            editing={editing?.id === row.id}
+                            editingProps={{
+                                name: 'code',
+                                defaultValue: editing?.code,
+                                error: editingErrors.code,
+                                errorMessage: CurrencyService.messages.invalidCode,
+
+                                onChange: handleFieldChange,
+                                onEnterKeyDown: () => handleEditingAccept(row),
+                                onEscapeKeyDown: handleCloseIconClick,
+                            }}
+                            regularProps={{
+                                value: row.code,
+                            }}
+                        />
+                        <EntityTableActionsCell
+                            editing={editing?.id === row.id}
+                            editingProps={{
+                                error: editingErrors.name || editingErrors.code,
+
+                                onAcceptClick: () => handleEditingAccept(row),
+                                onCloseClick: handleCloseIconClick, 
+                            }}
+                            regularProps={{
+                                onEditClick: () => handleEditIconClick(row),
+                                onDeleteClick: () => handleDeleteIconClick(row.id),
+                            }}
+                        />
+                    </>
+                )}
+                onAddButtonClick={toggleNewDialog}
+            />
             {deleteAlertOptions.open &&
                 <DeleteCurrencyAlert
-                    id={deleteAlertOptions.id!!}
+                    id={deleteAlertOptions.id!}
                     onClose={handleDeleteAlertClose}
                 />
             }
             {newDialogOpen &&
-                <NewCurrencyDialog onClose={toggleNewDialog} />
+                <NewCurrencyDialog onClose={toggleNewDialog}/>
             }
-        </Box>
+        </>
     );
 };
 

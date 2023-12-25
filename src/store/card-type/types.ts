@@ -1,3 +1,4 @@
+import { HasId } from '../../types/common';
 import { LoadingState } from '../../types/store';
 
 export enum CardTypeAsyncActionType {
@@ -12,8 +13,8 @@ export interface NewCardTypeDto {
     icon: string
 };
 
-export interface CardTypeDto extends NewCardTypeDto {
-    id: number,
+export interface CardTypeDto extends NewCardTypeDto, HasId {
+    
 };
 
 export interface CardTypeState {

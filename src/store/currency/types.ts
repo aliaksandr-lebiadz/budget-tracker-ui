@@ -1,3 +1,4 @@
+import { HasId } from "../../types/common";
 import { LoadingState } from "../../types/store";
 
 export enum CurrencyAsyncActionType {
@@ -12,8 +13,8 @@ export interface NewCurrencyDto {
     code: string,
 };
 
-export interface CurrencyDto extends NewCurrencyDto {
-    id: number,
+export interface CurrencyDto extends NewCurrencyDto, HasId {
+
 };
 
 export interface CurrencyState {

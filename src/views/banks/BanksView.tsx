@@ -24,7 +24,7 @@ const editingErrorsInitialState = {
     show: false,
 };
 
-const CardTypesView = () => {
+const BanksView = () => {
 
     const dispatch = useAppDispatch();
 
@@ -93,7 +93,7 @@ const CardTypesView = () => {
         setEditingErrors(previousErrors => ({
             ...previousErrors,
             //@ts-ignore
-            name: previousErrors.show ? !CardTypeService.isNameValid(value) : previousErrors.name,
+            name: previousErrors.show ? !BankService.isNameValid(value) : previousErrors.name,
         }));
     };
 
@@ -222,4 +222,4 @@ const CardTypesView = () => {
     );
 };
 
-export default CardTypesView;
+export default BanksView;
